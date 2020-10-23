@@ -1,0 +1,68 @@
+{
+  "player": [
+    {},
+    {
+      "name": "Player 1",
+      "tag": "Tag 1",
+      "character": "Raymer"
+    },
+    {
+      "name": "Player 2",
+      "tag": "Tag 2",
+      "character": "Zhurong"
+    },
+    {
+      "name": "Player 3",
+      "tag": "Tag 3",
+      "character": "Ashani"
+    },
+    {
+      "name": "Player 4",
+      "tag": "Tag 4",
+      "character": "Urdah"
+    },
+    {
+      "name": "Player 5",
+      "tag": "Tag 5",
+      "character": "Weishan"
+    },
+    {
+      "name": "Player 6",
+      "tag": "Tag 6",
+      "character": "Kidd"
+    }
+  ],
+  "teamName": [
+    null,
+    "Team 1 Name",
+    "Team 2 Name"
+  ],
+  "score": [
+    null,
+    2,
+    1
+  ],
+  "wl": [
+    null,
+    "Nada",
+    "Nada"
+  ],
+  "gamemode": 3,
+  "bestOf": "Bo5",
+  "round": "Winners Finals",
+  "tournamentName": "A Tournament 123",
+  "caster": [
+    {},
+    {
+      "name": "Caster 1",
+      "twitter": "Twitter 1",
+      "twitch": "Twitch 1"
+    },
+    {
+      "name": "Caster 2",
+      "twitter": "Twitter 2",
+      "twitch": "Twitch 2"
+    }
+  ],
+  "allowIntro": false
+}

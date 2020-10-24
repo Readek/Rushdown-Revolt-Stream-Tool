@@ -19,6 +19,20 @@
             src: url('Resources/Fonts/LEMONMILK-Medium.otf');
         }
 
+        @font-face {
+            font-family: "BlackHole";
+            src: url('Resources/Fonts/BlackHoleBB.ttf');
+        }
+        @font-face {
+            font-family: "BlackHoleIta";
+            src: url('Resources/Fonts/BlackHoleBB_ital.ttf');
+        }
+
+        @font-face {
+            font-family: "Vortex";
+            src: url('Resources/Fonts/VortexRising-Regular.otf');
+        }
+
         body {
             width: 1920px;
             height: 1080px;
@@ -34,35 +48,15 @@
             position: absolute;
         }
 
-        .mirror {
-            position: absolute;
-            transform: scaleX(-1);
-        }
 
-        #oneEighty {
+        .oneEighty {
             width: 1920px;
             height: 1080px;
-            clip: rect(0px, 960px, 1080px, 0px);
-        }
-
-        .mirrorP2 {
-            position: absolute;
-            transform: rotateY(182deg);
-            top: 0px;
-            right: 0px;
         }
 
 
-        #bgVids {
+        #bgVid {
             filter: grayscale(.8);
-        }
-
-        #vidBGP1 {
-            clip: rect(0px, 960px, 1080px, 0px);
-        }
-
-        #vidBGP2 {
-            clip: rect(0px, 1920px, 1080px, 960px);
         }
 
 
@@ -79,24 +73,34 @@
 
         .character {
             position: absolute;
-            width: 1920px;
-            height: 1080px;
             object-fit: scale-down;
+            transform: scale(1.75);
+            top: 310px;
+            /* transform: scale(1.4);
+            top: 135px; */
+        }
+        #charImgP1 {
+            left: 180px;
+            /* left: 100px; */
+        }
+        #charImgP2 {
+            right: 180px;
+            /* right: 100px; */
         }
 
 
         .wrappers {
             position: absolute;
-            transform: rotate(-3deg);
             width: 940px;
             height: 120px;
-            bottom: 90px;
+            bottom: 40px;
             line-height: 90px;
-            font-family: "LemonMilk";
+            font-family: "Vortex";
             text-align: center;
             white-space: nowrap;
             text-shadow: 1px 1px 10px rgba(0, 0, 0, 0.7);
             opacity: 0;
+            text-transform: uppercase;
         }
 
         #p1Wrapper {
@@ -108,79 +112,89 @@
         }
 
         .name {
-            color: white;
+            -webkit-text-stroke-width: 4px;
+            -webkit-text-stroke-color: #fff;
         }
 
         .team {
-            color: lightgray;
+            -webkit-text-stroke-width: 2px;
+            -webkit-text-stroke-color: #fff;
+            /* margin-right: 10px; */
+        }
+
+        .gold {
+            color: #d1b32f;
+        }
+        .purple {
+            color: #bc60d8;
         }
 
 
         .roundInfo {
             position: absolute;
             text-align: center;
-            font-family: "Deansgate";
+            font-family: "Vortex";
         }
 
         #round {
-            width: 319px;
+            width: 559px;
             height: 50px;
-            left: 800px;
+            left: 680px;
             top: 62px;
-            color: black;
+            color: white;
             line-height: 38px;
         }
 
         #tournament {
-            width: 365px;
+            width: 465px;
             height: 40px;
-            left: 777px;
+            left: 727px;
             top: 29px;
-            color: rgb(65, 65, 65);
+            color: lightgray;
             line-height: 28px;
         }
 
 
         .casterInfo {
             position: absolute;
-            width: 170px;
+            width: 240px;
             height: 34px;
             top: 130px;
             text-align: center;
-            font-family: "Deansgate";
-            color: black;
+            font-family: "BlackHole";
+            color: white;
             line-height: 26px;
         }
 
         #caster1 {
-            left: 765px;
+            left: 700px;
         }
 
         #caster2 {
-            right: 765px;
+            right: 700px;
         }
 
 
         .socialBox {
             position: absolute;
-            width: 170px;
+            width: 240px;
             height: 30px;
             top: 162px;
             text-align: center;
-            font-family: "Deansgate";
-            color: rgb(65, 65, 65);
+            font-family: "BlackHole";
+            color: lightgrey;
             line-height: 26px;
         }
         .twitterIcon {
-            height: 19px;
-            width: 19px;
-            fill: rgb(65, 65, 65);
+            height: 22px;
+            width: 22px;
+            fill: lightgray;
             transform: translate(0px, 2px);
         }
         .twitchIcon {
             height: 17px;
             width: 17px;
-            fill: rgb(65, 65, 65);
+            fill: lightgrey;
             transform: translate(0px, 1px);
         }
 
@@ -192,47 +206,63 @@
         }
 
         #twitter1Wrapper, #twitch1Wrapper {
-            left: 765px;
+            left: 700px;
         }
         #twitter2Wrapper, #twitch2Wrapper {
-            right: 765px;
+            right: 700px;
+        }
+
+        #vsOverlay {
+            width: 1920px;
+            height: 1080px;
+            object-fit: fill;
         }
     </style>
 </head>
 
 <body>
-    <div id="bgVids">
-        <video autoplay loop class="absol" id="vidBGP1"></video>
-        <video autoplay loop class="absol" id="vidBGP2"></video>
+    <div id="bgVid">
+        <video src="Resources/Backgrounds/bg.webm" autoplay loop class="absol"></video>
     </div>
 
     <div id="charas">
-        <div class="absol" id="oneEighty">
-            <div id="charaP1">
-                <img class="character" id="charP1"/>
+        <div class="absol oneEighty" id="charsLeft">
+            <div id="charP1">
+                <img class="character" id="charImgP1"/>
+            </div>
+            <div id="charP3">
+                <img class="character" id="charImgP3"/>
+            </div>
+            <div id="charP5">
+                <img class="character" id="charImgP5"/>
             </div>
         </div>
 
-        <div class="mirrorP2" id="oneEighty">
-            <div id="charaP2">
-                <img class="character" id="charP2"/>
+        <div class="absol oneEighty" id="charsRight">
+            <div id="charP2">
+                <img class="character" id="charImgP2"/>
+            </div>
+            <div id="charP4">
+                <img class="character" id="charImgP2"/>
+            </div>
+            <div id="charP6">
+                <img class="character" id="charImgP2"/>
             </div>
         </div>
     </div>
-    
+
     <div id="playerTexts">
         <span id="p1Wrapper" class="wrappers">
-            <span id="p1Team" class="team"></span>
-            <span id="p1Name" class="name"></span>
+            <span id="p1Team" class="team gold"></span>
+            <span id="p1Name" class="name gold"></span>
         </span>
 
         <span id="p2Wrapper" class="wrappers">
-            <span id="p2Team" class="team"></span>
-            <span id="p2Name" class="name"></span>
+            <span id="p2Team" class="team purple"></span>
+            <span id="p2Name" class="name purple"></span>
         </span>
     </div>
 
-    <img src="Resources/Overlay/VS Screen/VS Screen Overlay.png" class="absol"/>
 
     <div id="roundInfo">
         <span id="round" class="roundInfo"></span>
@@ -275,5 +305,8 @@
         </span>
 
     </div>
+
+    <!-- <img src="Resources/grid.png" class="absol"/> -->
+
 </body>
 </html>

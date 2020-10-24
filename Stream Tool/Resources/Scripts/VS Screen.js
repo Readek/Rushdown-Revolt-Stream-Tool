@@ -6,12 +6,12 @@ const fadeOutTime = .3;
 const introDelay = .5; //all animations will get this delay when the html loads (use this so it times with your transition)
 
 //max text sizes (used when resizing back)
-const playerSize = '90px';
-const teamSize = '50px';
-const roundSize = '38px';
-const tournamentSize = '28px';
-const casterSize = '25px';
-const twitterSize = '20px';
+const playerSize = '120px';
+const teamSize = '70px';
+const roundSize = '70px';
+const tournamentSize = '50px';
+const casterSize = '40px';
+const twitterSize = '35px';
 
 //to store the current character info
 let p1CharInfo, p2CharInfo;
@@ -72,16 +72,16 @@ async function getData(scInfo) {
 		//set the character info for p1
 		p1CharInfo = await getCharInfo(player[1].character);
 		//set p1 character
-		updateChar(player[1].character, 'charP1', p1CharInfo);
+		updateChar(player[1].character, 'charImgP1', p1CharInfo);
 		//move the character
-		initCharaFade("#charaP1");
+		initCharaFade("#charP1");
 		//save character info so we change them later if different
 		p1CharacterPrev = player[1].character;
 
 		//same for p2
 		p2CharInfo = await getCharInfo(player[2].character);
-		updateChar(player[2].character, 'charP2', p2CharInfo);
-		initCharaFade("#charaP2");
+		updateChar(player[2].character, 'charImgP2', p2CharInfo);
+		initCharaFade("#charP2");
 		p2CharacterPrev = player[2].character;
 
 
@@ -100,6 +100,10 @@ async function getData(scInfo) {
 		updateSocialText("twitch2", caster[2].twitch, twitterSize, "twitch2Wrapper");
 
 		//setup twitter/twitch change
+		twitter1 = caster[1].twitter;
+		twitch1 = caster[1].twitch;
+		twitter2 = caster[2].twitter;
+		twitch2 = caster[2].twitch;
 		socialChange1("twitter1Wrapper", "twitch1Wrapper");
 		socialChange2("twitter2Wrapper", "twitch2Wrapper");
 		//set an interval to keep changing the names
@@ -155,11 +159,11 @@ async function getData(scInfo) {
 			p1CharInfo = await getCharInfo(player[1].character);
 
 			//move and fade out the character
-			charaFadeOut("#charaP1", () => {
+			charaFadeOut("#charP1", () => {
 				//update the character image and trail, and also storing its scale for later
-				const charScale = updateChar(player[1].character, 'charP1', p1CharInfo);
+				const charScale = updateChar(player[1].character, 'charImgP1', p1CharInfo);
 				//move and fade them back
-				charaFadeIn("#charaP1");
+				charaFadeIn("#charP1");
 			});
 
 			p1CharacterPrev = player[1].character;
@@ -170,9 +174,9 @@ async function getData(scInfo) {
 
 			p2CharInfo = await getCharInfo(player[2].character);
 
-			charaFadeOut("#charaP2", () => {
-				const charScale = updateChar(player[2].character, 'charP2', p2CharInfo);
-				charaFadeIn("#charaP2");
+			charaFadeOut("#charP2", () => {
+				const charScale = updateChar(player[2].character, 'charImgP2', p2CharInfo);
+				charaFadeIn("#charP2");
 			});
 		
 			p2CharacterPrev = player[2].character;
@@ -205,10 +209,12 @@ async function getData(scInfo) {
 		}
 		//caster 1's twitter
 		if (document.getElementById('twitter1').textContent != caster[1].twitter){
+			twitter1 = caster[1].twitter;
 			updateSocial(caster[1].twitter, "twitter1", "twitter1Wrapper", twitch1, "twitch1Wrapper");
 		}
 		//caster 2's twitch (same as above)
 		if (document.getElementById('twitch1').textContent != caster[1].twitch){
+			twitch1 = caster[1].twitch;
 			updateSocial(caster[1].twitch, "twitch1", "twitch1Wrapper", caster[1].twitter, "twitter1Wrapper");
 		}
 
@@ -220,10 +226,12 @@ async function getData(scInfo) {
 			});
 		}
 		if (document.getElementById('twitter2').textContent != caster[2].twitter){
+			twitter2 = caster[2].twitter;
 			updateSocial(caster[2].twitter, "twitter2", "twitter2Wrapper", twitch2, "twitch2Wrapper");
 		}
 
 		if (document.getElementById('twitch2').textContent != caster[2].twitch){
+			twitch2 = caster[2].twitch;
 			updateSocial(caster[2].twitch, "twitch2", "twitch2Wrapper", caster[2].twitter, "twitter2Wrapper");
 		}
 	}
@@ -308,7 +316,7 @@ function socialChange2(twitterWrapperID, twitchWrapperID) {
 function updateSocial(mainSocial, mainText, mainWrapper, otherSocial, otherWrapper) {
 	//check if this is for twitch or twitter
 	let localSwitch = socialSwitch;
-	if (mainText == "twitch1" || mainText == "twitch2") {
+	if (mainText.includes("twitch")) {
 		localSwitch = !localSwitch;
 	}
 	//check if this is their turn so we fade out the other one
@@ -389,13 +397,13 @@ function fadeIn(itemID, timeDelay, dur = fadeInTime) {
 
 //fade out for the characters
 function charaFadeOut(itemID, funct) {
-	gsap.to(itemID, {delay: .2, x: -pCharMove, opacity: 0, ease: "power1.in", duration: fadeOutTime, onComplete: funct});
+	gsap.to(itemID, {delay: .2, opacity: 0, ease: "power1.in", duration: fadeOutTime, onComplete: funct});
 }
 
 //fade in characters edition
 function charaFadeIn(charaID) {
 	//move the character
-	gsap.to(charaID, {delay: .3, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime+.1});
+	gsap.to(charaID, {delay: .3, opacity: 1, ease: "power2.out", duration: fadeInTime+.1});
 }
 
 //initial characters fade in
@@ -453,9 +461,9 @@ function updateChar(pCharacter, charID, charInfo) {
 	}
 
 	//change the image path depending on the character and skin
-	charEL.setAttribute('src', 'Resources/Characters/Poster/' + pCharacter + '.png');
+	charEL.setAttribute('src', 'Resources/Characters/Poster/Full/' + pCharacter + '.jpg');
 
-	//             x, y, scale
+	/* //             x, y, scale
 	let charPos = [0, 0, 1];
 	//now, check if the character or skin exists in the json file we checked earler
 	if (charInfo != "notFound") {
@@ -470,9 +478,12 @@ function updateChar(pCharacter, charID, charInfo) {
 		charPos[2] = 1;
 	}
 
-	//to position the character
-	charEL.style.objectPosition =  charPos[0] + "px " + charPos[1] + "px";
-	charEL.style.transform = "scale(" + charPos[2] + ")";
+	charPos[0] = 200;
+	charPos[1] = 0;
+	charPos[2] = 1.5;
 
-	return charPos[2]; //we need this one to set scale keyframe when fading back
+	//to position the character
+	charEL.style.left = charPos[0] + "px";
+	charEL.style.top = charPos[1] + "px";
+	charEL.style.transform = "scale(" + charPos[2] + ")"; */
 }

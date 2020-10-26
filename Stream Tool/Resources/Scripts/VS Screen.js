@@ -18,6 +18,8 @@ let p1CharInfo, p2CharInfo;
 
 //to avoid the code constantly running the same method over and over
 let p1CharacterPrev, p2CharacterPrev;
+let p1ScorePrev, p2ScorePrev;
+let bestOfPrev;
 
 //variables for the twitter/twitch constant change
 let socialInt1, socialInt2;
@@ -83,6 +85,23 @@ async function getData(scInfo) {
 		updateChar(player[2].character, 'charImgP2', p2CharInfo);
 		initCharaFade("#charP2");
 		p2CharacterPrev = player[2].character;
+
+
+		//set the intial score with an animation depending on the score
+		if (bestOf == "Bo3") { //+1 if bo3 so assets show alright
+			scoreIntro("L", score[1]+1, introDelay);
+			scoreIntro("R", score[2]+1, introDelay);
+		} else {
+			scoreIntro("L", score[1], introDelay);
+			scoreIntro("R", score[2], introDelay);
+		}
+		p1ScorePrev = score[1];
+		p2ScorePrev = score[2];
+
+
+		//set the initial "best of" status
+		updateBo(bestOf);
+		bestOfPrev = bestOf;
 
 
 		//set the round text
@@ -161,7 +180,7 @@ async function getData(scInfo) {
 			//move and fade out the character
 			charaFadeOut("#charP1", () => {
 				//update the character image and trail, and also storing its scale for later
-				const charScale = updateChar(player[1].character, 'charImgP1', p1CharInfo);
+				updateChar(player[1].character, 'charImgP1', p1CharInfo);
 				//move and fade them back
 				charaFadeIn("#charP1");
 			});
@@ -175,11 +194,48 @@ async function getData(scInfo) {
 			p2CharInfo = await getCharInfo(player[2].character);
 
 			charaFadeOut("#charP2", () => {
-				const charScale = updateChar(player[2].character, 'charImgP2', p2CharInfo);
+				updateChar(player[2].character, 'charImgP2', p2CharInfo);
 				charaFadeIn("#charP2");
 			});
 		
 			p2CharacterPrev = player[2].character;
+		}
+
+
+		//update the score if it changed
+		if (p1ScorePrev != score[1]) {
+			//if this is best of 3, we will add +1 to the score count to change the right assets
+			if (bestOf == "Bo3") {
+				scoreUpdate("L", score[1]+1);
+			} else {
+				scoreUpdate("L", score[1]);
+			}
+			p1ScorePrev = score[1];
+		}
+
+		//time for the right side
+		if (p2ScorePrev != score[2]) {
+			//if this is best of 3, we will add +1 to the score count to change the right assets
+			if (bestOf == "Bo3") {
+				scoreUpdate("R", score[2]+1);
+			} else {
+				scoreUpdate("R", score[2]);
+			}
+			p2ScorePrev = score[2];
+		}
+
+
+		//"best of" update
+		if (bestOfPrev != bestOf) {
+			updateBo(bestOf);
+			if (bestOf == "Bo3") {
+				scoreUpdate("L", score[1]+1);
+				scoreUpdate("R", score[2]+1);
+			} else {
+				scoreUpdate("L", score[1]);
+				scoreUpdate("R", score[2]);
+			}
+			bestOfPrev = bestOf;
 		}
 
 
@@ -413,6 +469,60 @@ function initCharaFade(charaID) {
 		{opacity: 0},
 		{delay: introDelay, opacity: 1, ease: "power2.out", duration: fadeInTime});
 }
+
+
+//score intro animation, not using gsap because idk how to make it work with filters
+function scoreIntro(side, score, timeDelay) {
+	if (score > 0) {
+		setTimeout(() => {
+			document.getElementById("score"+side+"1").style.filter = "grayscale(0)";
+		}, timeDelay*1000+500);
+	}
+	if (score > 1) {
+		setTimeout(() => {
+			document.getElementById("score"+side+"2").style.filter = "grayscale(0)";
+		}, timeDelay*1000+750);
+	}
+	if (score > 2) {
+		setTimeout(() => {
+			document.getElementById("score"+side+"3").style.filter = "grayscale(0)";
+		}, timeDelay*1000+1000);
+	}
+}
+
+//score update and some ugly hardcoding
+function scoreUpdate(side, score) {
+	if (score == 0) {
+		document.getElementById("score"+side+"1").style.filter = "grayscale(1)";
+		document.getElementById("score"+side+"2").style.filter = "grayscale(1)";
+		document.getElementById("score"+side+"3").style.filter = "grayscale(1)";
+	} else if (score == 1) {
+		document.getElementById("score"+side+"1").style.filter = "grayscale(0)";
+		document.getElementById("score"+side+"2").style.filter = "grayscale(1)";
+		document.getElementById("score"+side+"3").style.filter = "grayscale(1)";
+	} else if (score == 2) {
+		document.getElementById("score"+side+"1").style.filter = "grayscale(0)";
+		document.getElementById("score"+side+"2").style.filter = "grayscale(0)";
+		document.getElementById("score"+side+"3").style.filter = "grayscale(1)";
+	} else {
+		document.getElementById("score"+side+"1").style.filter = "grayscale(0)";
+		document.getElementById("score"+side+"2").style.filter = "grayscale(0)";
+		document.getElementById("score"+side+"3").style.filter = "grayscale(0)";
+	}
+}
+
+
+//"best of" update
+function updateBo(bestOf) {
+	if (bestOf == "Bo5") {
+		document.getElementById("scoreL1").style.opacity = 1;
+		document.getElementById("scoreR1").style.opacity = 1;
+	} else {
+		document.getElementById("scoreL1").style.opacity = 0;
+		document.getElementById("scoreR1").style.opacity = 0;
+	}
+}
+
 
 //searches for the main json file
 function getInfo() {

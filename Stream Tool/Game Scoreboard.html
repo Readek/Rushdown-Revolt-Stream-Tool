@@ -24,6 +24,16 @@
             src: url('Resources/Fonts/LEMONMILK-Medium.otf');
         }
 
+        @font-face {
+            font-family: "BlackHole";
+            src: url('Resources/Fonts/BlackHoleBB.ttf');
+        }
+
+        @font-face {
+            font-family: "Vortex";
+            src: url('Resources/Fonts/VortexRising-Mod.ttf');
+        }
+
 
         body {
             width: 1920px;
@@ -34,7 +44,11 @@
             margin: 0px;
             text-transform: uppercase;
             color: white;
-            font-family: "Deansgate";
+            font-family: "BlackHole";
+        }
+
+        .absol {
+            position: absolute;
         }
 
 
@@ -45,7 +59,7 @@
         }
 
         #p1CharaMask {
-            -webkit-mask-image: url("Resources/Masks/Icon Mask.png");
+            /* -webkit-mask-image: url("Resources/Masks/Icon Mask.png"); */
             width: 1920px;
             height: 1080px;
         }
@@ -72,7 +86,7 @@
         }
 
         #p2CharaMask {
-            -webkit-mask-image: url("Resources/Masks/Icon Mask.png");
+            /* -webkit-mask-image: url("Resources/Masks/Icon Mask.png"); */
             transform: scaleX(-1);
             width: 1920px;
             height: 1080px;
@@ -88,20 +102,20 @@
 
         .wrappers {
             position: absolute;
-            width: 430px;
+            width: 330px;
             height: 54px;
             line-height: 54px;
-            text-align: center;
-            top: 0px;
+            top: 2px;
             opacity: 0;
         }
 
         #p1Wrapper {
-            left: 158px;
+            left: 215px;
+            text-align: right;
         }
 
         #p2Wrapper {
-            right: 158px;
+            right: 215px;
         }
 
         .teams {
@@ -115,18 +129,19 @@
 
         #roundBG {
             position: absolute;
-            top: 0px;
+            bottom: 120px;
+            left: 702px;
         }
 
         #round {
             position: absolute;
-            width: 215px;
-            height: 34px;
-            left: 853px;
-            top: 914px;
+            width: 365px;
+            height: 50px;
+            left: 773px;
+            bottom: 181px;
             line-height: 32px;
             text-align: center;
-            font-family: "Roboto";
+            font-family: "Vortex";
         }
         
 
@@ -138,23 +153,24 @@
 
         .pIntro {
             position: absolute;
-            width: 500px;
+            width: 545px;
             height: 94px;
             line-height: 74px;
-            bottom: 485px;
+            bottom: 475px;
             opacity: 0;
-            font-family: "LemonMilk";
+            font-family: "Vortex";
+            background-color: yellowgreen;
         }
 
         #p1Intro {
             text-align: right;
-            left: 355px;
+            left: 310px;
             text-shadow: 0px 0px 20px;
         }
 
         #p2Intro {
             text-align: left;
-            right: 355px;
+            right: 310px;
             text-shadow: 0px 0px 20px;
         }
 
@@ -169,15 +185,15 @@
             width: 1100px;
             height: 74px;
             left: 410px;
-            bottom: 505px;
-            font-family: "LemonMilk";
+            bottom: 496px;
+            font-family: "Vortex";
             line-height: 74px;
-            font-size: 110px;
+            font-size: 140px;
         }
 
         #rtIntro {
             line-height: 40px;
-            font-size: 48px;
+            font-size: 70px;
         }
 
         #roundIntro {
@@ -222,7 +238,7 @@
             position: absolute;
             height: 74px;
             right: 550px;
-            font-family: "LemonMilk";
+            font-family: "Vortex";
             line-height: 74px;
             bottom: 505px;
             font-size: 110px;
@@ -237,10 +253,9 @@
 </head>
 
 <body>
+    <img src="Resources/Overlay/Scoreboard/Top BG 1.png" class="absol" alt="">
     <div id="overlayP1">
-        <img src="Resources/Overlay/BG.png" class="scoreboardP1"/>
         <img id="wlP1" class="scoreboardP1"/>
-        <img id="p1Color" class="scoreboardP1"/>
         <div id=p1CharaMask>
             <img id="p1Character" class="pCharacter"/>
         </div>
@@ -256,9 +271,7 @@
     </div>
 
     <div id="overlayP2">
-        <img src="Resources/Overlay/BG.png" class="scoreboardP2"/>
         <img id="wlP2" class="scoreboardP2Fixed"/>
-        <img id="p2Color" class="scoreboardP2"/>
         <div id="iHateMasks">
             <div id="p2CharaMask">
                 <img id="p2Character" class="pCharacter"/>
@@ -276,7 +289,7 @@
     </div>
 
     <div id="overlayRound">
-        <img src="Resources/Overlay/Round BG Tournament.png" id="roundBG"/>
+        <img src="Resources/Overlay/Scoreboard/Round BG.png" id="roundBG"/>
         <span id="round"></span>
     </div>
 

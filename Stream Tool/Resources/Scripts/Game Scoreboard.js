@@ -53,15 +53,15 @@ async function getData(scInfo) {
 				document.getElementById('introVid').play();
 			}, 0); //if you need it to start later, change that 0 (and also update the introDelay)
 
-			if (p1Score + p2Score == 0) { //if this is the first game, introduce players
+			if (score[1] + score[2] == 0) { //if this is the first game, introduce players
 
 				const p1IntroEL = document.getElementById('p1Intro');
 				const p2IntroEL = document.getElementById('p2Intro');
 
 				p1IntroEL.textContent = player[1].name; //update player 1 intro text
-				p1IntroEL.style.fontSize = '85px'; //resize the font to its max size
+				p1IntroEL.style.fontSize = '110px'; //resize the font to its max size
 				resizeText(p1IntroEL); //resize the text if its too large
-				p2IntroEL.style.fontSize = '85px';
+				p2IntroEL.style.fontSize = '110px';
 				p2IntroEL.textContent = player[2].name; //p2
 				resizeText(p2IntroEL);
 
@@ -143,7 +143,7 @@ async function getData(scInfo) {
 
 		//set the current score
 		updateScore('p1Score', score[1], bestOf, "p1ScoreUp", false);
-		p1ScorePrev = p1Score;
+		p1ScorePrev = score[1];
 
 
 		//took notes from player 1? well, this is exactly the same!
@@ -163,7 +163,7 @@ async function getData(scInfo) {
 		p2wlPrev = wl[2];
 
 		updateScore('p2Score', score[2], bestOf, "p2ScoreUp", false);
-		p2ScorePrev = p2Score;
+		p2ScorePrev = score[2];
 
 
 		//update the round text
@@ -307,7 +307,7 @@ function updateScore(scoreID, pScore, bestOf, scoreUpID, playAnim) {
 	if (playAnim) { //do we want to play the score up animation?
 		//depending on the "bestOf" and the color, change the clip
 		const scoreUpEL = document.getElementById(scoreUpID);
-		scoreUpEL.setAttribute('src', 'Resources/Overlay/Score/ScoreUp ' + bestOf + '.webm');
+		scoreUpEL.setAttribute('src', 'Resources/Overlay/Score/Scoreboard/ScoreUp ' + bestOf + '.webm');
 		scoreUpEL.play();
 		delay = 200; //add a bit of delay so the score change fits with the vid
 	}
@@ -315,16 +315,16 @@ function updateScore(scoreID, pScore, bestOf, scoreUpID, playAnim) {
 	//set timeout to the actual image change so it fits with the animation (if it played)
 	setTimeout(() => {
 		//change the image depending on the bestOf status and, of course, the current score
-		scoreEL.setAttribute('src', 'Resources/Overlay/Score/Win Tick ' + bestOf + ' ' + pScore + '.png')
+		scoreEL.setAttribute('src', 'Resources/Overlay/Scoreboard/Score/Win Tick ' + bestOf + ' ' + pScore + '.png')
 	}, delay);
 	//nothing will show if the score is set to 3 which is intended
 	if (startup) {scoreEL.addEventListener("error", () => {showNothing(scoreEL)})}
 }
 
 function updateBorder(bestOf) {
-	document.getElementById('borderP1').setAttribute('src', 'Resources/Overlay/Border ' + bestOf + '.png');
-	document.getElementById('borderP2').setAttribute('src', 'Resources/Overlay/Border ' + bestOf + '.png');
-	bestOfPrev = bestOf
+	/* document.getElementById('borderP1').setAttribute('src', 'Resources/Overlay/Scoreboard/Border ' + bestOf + '.png');
+	document.getElementById('borderP2').setAttribute('src', 'Resources/Overlay/Scoreboard/Border ' + bestOf + '.png');
+	bestOfPrev = bestOf */
 }
 
 //team logo change
@@ -339,10 +339,10 @@ function updateTeamLogo(logoID, pTeam, playerNum) {
 //player text change
 function updatePlayerName(wrapperID, nameID, teamID, pName, pTeam) {
 	const nameEL = document.getElementById(nameID);
-	nameEL.style.fontSize = '30px'; //set original text size
+	nameEL.style.fontSize = '40px'; //set original text size
 	nameEL.textContent = pName; //change the actual text
 	const teamEL = document.getElementById(teamID);
-	teamEL.style.fontSize = '20px';
+	teamEL.style.fontSize = '25px';
 	teamEL.textContent = pTeam;
 	resizeText(document.getElementById(wrapperID)); //resize if it overflows
 }
@@ -350,7 +350,7 @@ function updatePlayerName(wrapperID, nameID, teamID, pName, pTeam) {
 //round change
 function updateRound(round) {
 	const roundEL = document.getElementById('round');
-	roundEL.style.fontSize = '19px'; //set original text size
+	roundEL.style.fontSize = '40px'; //set original text size
 	roundEL.textContent = round; //change the actual text
 	resizeText(roundEL); //resize it if it overflows
 }
@@ -398,7 +398,7 @@ function updateWL(pWL, playerNum) {
 	} else if (pWL == "L") {
 		pWLEL.setAttribute('src', 'Resources/Overlay/Losers P' + playerNum + '.png')
 	} else if (pWL == "Nada") {
-		pWLEL.setAttribute('src', 'Resources/Literally nothing.png')
+		pWLEL.setAttribute('src', 'Resources/Literally Nothing.png')
 	}
 
 	if (startup) {pWLEL.addEventListener("error", () => {showNothing(pWLEL)})}
@@ -491,6 +491,10 @@ async function updateChar(pCharacter, charID) {
 		}
 		charPos[1] = 3; charPos[2] = 1.5;
 	}
+
+	charPos[0] = 0;
+	charPos[1] = 0;
+	charPos[2] = 1;
 	
 	//to position the character
 	charEL.style.objectPosition =  charPos[0] + "px " + charPos[1] + "px";

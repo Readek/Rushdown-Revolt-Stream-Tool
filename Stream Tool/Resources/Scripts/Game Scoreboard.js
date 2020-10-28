@@ -168,8 +168,12 @@ async function getData(scInfo) {
 
 		//update the round text
 		updateRound(round);
-		//fade it in
-		gsap.to("#overlayRound", {delay: introDelay, opacity: 1, ease: "power2.out", duration: fadeInTime+.2});
+		//fade it in, but only if theres text
+		if (round != "") {
+			gsap.to("#overlayRound", {delay: introDelay, opacity: 1, ease: "power2.out", duration: fadeInTime+.2});
+		} else {
+			document.getElementById("overlayRound").opacity = 0;
+		}
 
 
 		//check if the team has a logo we can place on the overlay
@@ -177,7 +181,8 @@ async function getData(scInfo) {
 		updateTeamLogo("teamLogoP2", player[1].tag, "2");
 
 		//dont forget to update the border if its Bo3 or Bo5!
-		updateBorder(bestOf);
+		/* updateBorder(bestOf); */
+		bestOfPrev = bestOf;
 
 		startup = false; //next time we run this function, it will skip all we just did
 	}
@@ -202,7 +207,7 @@ async function getData(scInfo) {
 			//fade out the image while also moving it because that always looks cool
 			fadeOutMove("#p1Character", -pCharMove, async () => {
 				//now that nobody can see it, lets change the image!
-				const charScale = await updateChar(p1Character, 'p1Character'); //will return scale
+				const charScale = await updateChar(player[1].character, 'p1Character'); //will return scale
 				//and now, fade it in
 				fadeInChara("#p1Character", charScale);
 			});
@@ -278,19 +283,30 @@ async function getData(scInfo) {
 
 		//change border depending of the Best Of status
 		if (bestOfPrev != bestOf) {
-			updateBorder(bestOf); //update the border
+			/* updateBorder(bestOf); */ //update the border
 			//update the score ticks so they fit the bestOf border
 			updateScore('p1Score', score[1], bestOf, "p1ScoreUp", false);
 			updateScore('p2Score', score[2], bestOf, "p2ScoreUp", false);
+			bestOfPrev = bestOf;
 		}
 
 		
-		//and finally, update the round text
+		//update the round text
 		if (document.getElementById('round').textContent != round){
-			fadeOut("#round", () => {
-				updateRound(round);
-				fadeIn("#round");
-			});
+			if (round != "") { //if theres actual text
+				if (document.getElementById("#overlayRound").style.opacity == 0) {
+					updateRound(round);
+					fadeIn("#overlayRound")
+				} else {
+					fadeOut("#round", () => {
+						updateRound(round);
+						fadeIn("#round");
+					});	
+				}
+			} else { //if no text, hide background
+				fadeOut("#overlayRound");
+			}
+
 		}
 	}
 }
@@ -321,12 +337,6 @@ function updateScore(scoreID, pScore, bestOf, scoreUpID, playAnim) {
 	if (startup) {scoreEL.addEventListener("error", () => {showNothing(scoreEL)})}
 }
 
-function updateBorder(bestOf) {
-	/* document.getElementById('borderP1').setAttribute('src', 'Resources/Overlay/Scoreboard/Border ' + bestOf + '.png');
-	document.getElementById('borderP2').setAttribute('src', 'Resources/Overlay/Scoreboard/Border ' + bestOf + '.png');
-	bestOfPrev = bestOf */
-}
-
 //team logo change
 function updateTeamLogo(logoID, pTeam, playerNum) {
 	//search for an image with the team name
@@ -350,7 +360,7 @@ function updatePlayerName(wrapperID, nameID, teamID, pName, pTeam) {
 //round change
 function updateRound(round) {
 	const roundEL = document.getElementById('round');
-	roundEL.style.fontSize = '40px'; //set original text size
+	roundEL.style.fontSize = '30px'; //set original text size
 	roundEL.textContent = round; //change the actual text
 	resizeText(roundEL); //resize it if it overflows
 }
@@ -483,21 +493,14 @@ async function updateChar(pCharacter, charID) {
 		charPos[1] = charInfo.scoreboard.y;
 		charPos[2] = charInfo.scoreboard.scale;
 	} else { //if the character isnt on the database, set positions for the "?" image
-		//this condition is used just to position images well on both sides
-		if (charEL == document.getElementById("p1Character")) {
-			charPos[0] = 18;
-		} else {
-			charPos[0] = 12;
-		}
-		charPos[1] = 3; charPos[2] = 1.5;
+		charPos[0] = 598;
+		charPos[1] = -22;
+		charPos[2] = .65;
 	}
-
-	charPos[0] = 0;
-	charPos[1] = 0;
-	charPos[2] = 1;
 	
 	//to position the character
-	charEL.style.objectPosition =  charPos[0] + "px " + charPos[1] + "px";
+	charEL.style.left = charPos[0] + "px";
+	charEL.style.top = charPos[1] + "px";
 	charEL.style.transform = "scale(" + charPos[2] + ")";
 
 	return charPos[2]; //we need this one to set scale keyframe when fading back

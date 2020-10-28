@@ -571,7 +571,7 @@ function updateChar(pCharacter, charID, charInfo) {
 	}
 
 	//change the image path depending on the character and skin
-	charEL.setAttribute('src', 'Resources/Characters/Poster/Full/' + pCharacter + '.jpg');
+	charEL.setAttribute('src', 'Resources/Characters/Poster/' + pCharacter + '.png');
 
 	/* //             x, y, scale
 	let charPos = [0, 0, 1];

@@ -49,6 +49,8 @@
 
         .absol {
             position: absolute;
+            left: 0px;
+            top: 0px;
         }
 
 
@@ -59,7 +61,7 @@
         }
 
         #p1CharaMask {
-            /* -webkit-mask-image: url("Resources/Masks/Icon Mask.png"); */
+            -webkit-mask-image: url("Resources/Overlay/Scoreboard/Char Mask.png");
             width: 1920px;
             height: 1080px;
         }
@@ -86,13 +88,17 @@
         }
 
         #p2CharaMask {
-            /* -webkit-mask-image: url("Resources/Masks/Icon Mask.png"); */
+            -webkit-mask-image: url("Resources/Overlay/Scoreboard/Char Mask.png");
             transform: scaleX(-1);
             width: 1920px;
             height: 1080px;
+            /* the scoreboard is a bit offcentered */
+            position: absolute;
+            left: 2px;
         }
 
         .pCharacter {
+            position: absolute;
             opacity: 0;
             width: 100px;
             height: 100px;
@@ -137,8 +143,8 @@
             position: absolute;
             width: 365px;
             height: 50px;
-            left: 773px;
-            bottom: 181px;
+            left: 778px;
+            top: 123px;
             line-height: 32px;
             text-align: center;
             font-family: "Vortex";
@@ -259,10 +265,16 @@
         <div id=p1CharaMask>
             <img id="p1Character" class="pCharacter"/>
         </div>
-        <img id="p1Score" class="scoreboardP1"/>
-        <img id="borderP1" class="scoreboardP1"/>
+
+        <div id="scoresL">
+            <img id="scoreL1" class="scores" src="Resources/Overlay/VS Screen/Scores/Yellow 1.png">
+            <img id="scoreL2" class="scores" src="Resources/Overlay/VS Screen/Scores/Yellow 2.png">
+            <img id="scoreL3" class="scores" src="Resources/Overlay/VS Screen/Scores/Yellow 3.png">
+            <img id="p1Score" class="scoreboardP1"/>
+            <video id="p1ScoreUp" class="scoreboardP1"></video>
+        </div>
+
         <img id="teamLogoP1" class="scoreboardP1"/>
-        <video id="p1ScoreUp" class="scoreboardP1"></video>
 
         <span id="p1Wrapper" class="wrappers">
             <span id="p1Team" class="teams"></span>
@@ -277,10 +289,16 @@
                 <img id="p2Character" class="pCharacter"/>
             </div>
         </div>
-        <img id="p2Score" class="scoreboardP2"/>
-        <img id="borderP2" class="scoreboardP2"/>
+
+        <div id="scoresR">
+            <img id="scoreR1" class="scores" src="Resources/Overlay/VS Screen/Scores/Purple 1.png">
+            <img id="scoreR2" class="scores" src="Resources/Overlay/VS Screen/Scores/Purple 2.png">
+            <img id="scoreR3" class="scores" src="Resources/Overlay/VS Screen/Scores/Purple 3.png">
+            <img id="p2Score" class="scoreboardP2"/>
+            <video id="p2ScoreUp" class="scoreboardP2"></video>
+        </div>
+
         <img id="teamLogoP2" class="scoreboardP2Fixed"/>
-        <video id="p2ScoreUp" class="scoreboardP2"></video>
 
         <span id="p2Wrapper" class="wrappers">
             <span id="p2Team" class="teams"></span>
@@ -288,8 +306,10 @@
         </span>
     </div>
 
+    <img src="Resources/Overlay/Scoreboard/test.png" class="absol"/>
+
     <div id="overlayRound">
-        <img src="Resources/Overlay/Scoreboard/Round BG.png" id="roundBG"/>
+        <!-- <img src="Resources/Overlay/Scoreboard/Round BG.png" id="roundBG"/> -->
         <span id="round"></span>
     </div>
 

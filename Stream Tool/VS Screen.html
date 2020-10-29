@@ -94,6 +94,25 @@
             -webkit-mask-image: url("Resources/Overlay/VS\ Screen/Mask Right.png");
         }
 
+        .background {
+            position: absolute;
+            object-fit: scale-down;
+            transform: scale(1.75);
+            top: 310px;
+        }
+        #bgImgP1 {
+            left: 180px;
+        }
+        #bgImgP2 {
+            right: 180px;
+        }
+        #bgsLeft {
+            -webkit-mask-image: url("Resources/Overlay/VS\ Screen/Mask Left.png");
+        }
+        #bgsRight {
+            -webkit-mask-image: url("Resources/Overlay/VS\ Screen/Mask Right.png");
+        }
+
 
         .scores {
             position: absolute;
@@ -151,7 +170,6 @@
         .team {
             -webkit-text-stroke-width: 2px;
             -webkit-text-stroke-color: #fff;
-            /* margin-right: 10px; */
         }
 
         .gold {
@@ -260,6 +278,7 @@
     <div id="charas">
         <div class="absol oneEighty" id="charsLeft">
             <div id="charP1">
+                <img class="background" id="bgImgP1"/>
                 <img class="character" id="charImgP1"/>
             </div>
             <div id="charP3">
@@ -272,6 +291,7 @@
 
         <div class="absol oneEighty" id="charsRight">
             <div id="charP2">
+                <img class="background" id="bgImgP2"/>
                 <img class="character" id="charImgP2"/>
             </div>
             <div id="charP4">

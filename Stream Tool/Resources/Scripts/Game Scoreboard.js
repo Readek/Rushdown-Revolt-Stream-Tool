@@ -142,7 +142,7 @@ async function getData(scInfo) {
 		p1wlPrev = wl[1];
 
 		//set the current score
-		updateScore('p1Score', score[1], bestOf, "p1ScoreUp", false);
+		updateScore('scoreL', score[1], bestOf, "L");
 		p1ScorePrev = score[1];
 
 
@@ -162,7 +162,7 @@ async function getData(scInfo) {
 			{delay: introDelay+.5, y: 0, ease: "power2.out", duration: .5});
 		p2wlPrev = wl[2];
 
-		updateScore('p2Score', score[2], bestOf, "p2ScoreUp", false);
+		updateScore('scoreR', score[2], bestOf, "R");
 		p2ScorePrev = score[2];
 
 
@@ -175,10 +175,6 @@ async function getData(scInfo) {
 			document.getElementById("overlayRound").opacity = 0;
 		}
 
-
-		//check if the team has a logo we can place on the overlay
-		updateTeamLogo("teamLogoP1", player[1].tag, "1");
-		updateTeamLogo("teamLogoP2", player[1].tag, "2");
 
 		//dont forget to update the border if its Bo3 or Bo5!
 		/* updateBorder(bestOf); */
@@ -229,16 +225,8 @@ async function getData(scInfo) {
 
 		//score check
 		if (p1ScorePrev != score[1]) {
-			updateScore('p1Score', score[1], bestOf, "p1ScoreUp", true);
+			updateScore('scoreL', score[1], bestOf, "L");
 			p1ScorePrev = score[1];
-		}
-		
-		//check if the team has a logo we can place on the overlay
-		if (document.getElementById('p1Team').textContent != player[1].tag) {
-			fadeOut("#teamLogoP1", () => {
-				updateTeamLogo("teamLogoP1", player[1].tag, "1");
-				fadeIn("#teamLogoP1");
-			});
 		}
 
 
@@ -269,15 +257,8 @@ async function getData(scInfo) {
 		}
 
 		if (p2ScorePrev != score[2]) {
-			updateScore('p2Score', score[2], bestOf, "p2ScoreUp", true);
+			updateScore('scoreR', score[2], bestOf, "R");
 			p2ScorePrev = score[2];
-		}
-
-		if (document.getElementById('p2Team').textContent != player[2].tag) {
-			fadeOut("#teamLogoP2", () => {
-				updateTeamLogo("teamLogoP2", player[2].team, "2");
-				fadeIn("#teamLogoP2");
-			});
 		}
 
 
@@ -293,8 +274,10 @@ async function getData(scInfo) {
 		
 		//update the round text
 		if (document.getElementById('round').textContent != round){
-			if (round != "") { //if theres actual text
-				if (document.getElementById("#overlayRound").style.opacity == 0) {
+			console.log(document.getElementById('round').textContent);
+			console.log(round);
+			if (round) { //if theres actual text
+				if (document.getElementById("overlayRound").style.opacity == 0) {
 					updateRound(round);
 					fadeIn("#overlayRound")
 				} else {
@@ -303,8 +286,9 @@ async function getData(scInfo) {
 						fadeIn("#round");
 					});	
 				}
-			} else { //if no text, hide background
+			} else { //if no text, hide everything
 				fadeOut("#overlayRound");
+				updateRound(round);
 			}
 
 		}
@@ -318,32 +302,27 @@ function showNothing(itemEL) {
 }
 
 //score change
-function updateScore(scoreID, pScore, bestOf, scoreUpID, playAnim) {
+function updateScore(scoreID, pScore, bestOf, side) {
 	let delay = 0;
-	if (playAnim) { //do we want to play the score up animation?
+	/* if (playAnim) { //do we want to play the score up animation?
 		//depending on the "bestOf" and the color, change the clip
 		const scoreUpEL = document.getElementById(scoreUpID);
 		scoreUpEL.setAttribute('src', 'Resources/Overlay/Score/Scoreboard/ScoreUp ' + bestOf + '.webm');
 		scoreUpEL.play();
 		delay = 200; //add a bit of delay so the score change fits with the vid
-	}
+	} */
 	const scoreEL = document.getElementById(scoreID);
 	//set timeout to the actual image change so it fits with the animation (if it played)
 	setTimeout(() => {
 		//change the image depending on the bestOf status and, of course, the current score
-		scoreEL.setAttribute('src', 'Resources/Overlay/Scoreboard/Score/Win Tick ' + bestOf + ' ' + pScore + '.png')
+		if (pScore == 0) {
+			scoreEL.setAttribute('src', 'Resources/Overlay/Scoreboard/Score/' + bestOf + ' ' + pScore + '.png')
+		} else {
+			scoreEL.setAttribute('src', 'Resources/Overlay/Scoreboard/Score/' + bestOf + ' ' + pScore + ' ' + side + '.png')
+		}
 	}, delay);
 	//nothing will show if the score is set to 3 which is intended
 	if (startup) {scoreEL.addEventListener("error", () => {showNothing(scoreEL)})}
-}
-
-//team logo change
-function updateTeamLogo(logoID, pTeam, playerNum) {
-	//search for an image with the team name
-	const logoEL = document.getElementById(logoID);
-	logoEL.setAttribute('src', 'Resources/TeamLogos/' + pTeam + ' P' + playerNum + '.png');
-	//no image? show nothing
-	if (startup) {logoEL.addEventListener("error", () => {showNothing(logoEL)})}
 }
 
 //player text change

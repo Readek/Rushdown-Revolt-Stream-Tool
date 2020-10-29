@@ -74,7 +74,7 @@ async function getData(scInfo) {
 		//set the character info for p1
 		p1CharInfo = await getCharInfo(player[1].character);
 		//set p1 character
-		updateChar(player[1].character, 'charImgP1', p1CharInfo);
+		updateChar(player[1].character, 'charImgP1', p1CharInfo, 'bgImgP1');
 		//move the character
 		initCharaFade("#charP1");
 		//save character info so we change them later if different
@@ -82,7 +82,7 @@ async function getData(scInfo) {
 
 		//same for p2
 		p2CharInfo = await getCharInfo(player[2].character);
-		updateChar(player[2].character, 'charImgP2', p2CharInfo);
+		updateChar(player[2].character, 'charImgP2', p2CharInfo, 'bgImgP2');
 		initCharaFade("#charP2");
 		p2CharacterPrev = player[2].character;
 
@@ -180,7 +180,7 @@ async function getData(scInfo) {
 			//move and fade out the character
 			charaFadeOut("#charP1", () => {
 				//update the character image and trail, and also storing its scale for later
-				updateChar(player[1].character, 'charImgP1', p1CharInfo);
+				updateChar(player[1].character, 'charImgP1', p1CharInfo, 'bgImgP1');
 				//move and fade them back
 				charaFadeIn("#charP1");
 			});
@@ -194,7 +194,7 @@ async function getData(scInfo) {
 			p2CharInfo = await getCharInfo(player[2].character);
 
 			charaFadeOut("#charP2", () => {
-				updateChar(player[2].character, 'charImgP2', p2CharInfo);
+				updateChar(player[2].character, 'charImgP2', p2CharInfo, 'bgImgP2');
 				charaFadeIn("#charP2");
 			});
 		
@@ -557,21 +557,27 @@ function getCharInfo(pCharacter) {
 }
 
 //character update!
-function updateChar(pCharacter, charID, charInfo) {
+function updateChar(pCharacter, charID, charInfo, bgID) {
 
 	//store so code looks cleaner later
 	const charEL = document.getElementById(charID);
+	const bgEL = document.getElementById(bgID);
 
 	//this will trigger whenever the image loaded cant be found
 	if (startup) {
 		//if the image fails to load, we will put a placeholder
 		charEL.addEventListener("error", () => {
-			charEL.setAttribute('src', 'Resources/Characters/Random.png');
-		})
+			showNothing(charEL);
+		});
+		bgEL.addEventListener("error", () => {
+			showNothing(bgEL);
+		});
 	}
 
 	//change the image path depending on the character and skin
 	charEL.setAttribute('src', 'Resources/Characters/Poster/' + pCharacter + '.png');
+	bgEL.setAttribute('src', 'Resources/Backgrounds/' + pCharacter + '.jpg');
+
 
 	/* //             x, y, scale
 	let charPos = [0, 0, 1];

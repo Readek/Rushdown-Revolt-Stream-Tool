@@ -79,6 +79,18 @@
             top: 0px;
         }
 
+
+        .charBG {
+            position: absolute;
+            top: 4px;
+        }
+        #p1charBG {
+            left: 558px;
+        }
+        #p2charBG {
+            right: 556px;
+        }
+
         #iHateMasks {
             width: 1920px;
             height: 1080px;
@@ -106,6 +118,18 @@
         }
 
 
+        #nameBGL {
+            position: absolute;
+            top: 4px;
+            right: 1320px;
+        }
+        #nameBGR {
+            position: absolute;
+            top: 4px;
+            left: 1322px;
+            transform: scaleX(-1);
+        }
+
         .wrappers {
             position: absolute;
             width: 330px;
@@ -129,22 +153,35 @@
         }
 
 
+        #scoreL {
+            position: absolute;
+            top: 0px;
+            left: 693px;
+        }
+        #scoreR {
+            position: absolute;
+            top: 0px;
+            right: 693px;
+            transform: scaleX(-1);
+        }
+
+
         #overlayRound {
             opacity: 0;
         }
 
         #roundBG {
             position: absolute;
-            bottom: 120px;
-            left: 702px;
+            top: 118px;
+            left: 789px;
         }
 
         #round {
             position: absolute;
-            width: 365px;
-            height: 50px;
-            left: 778px;
-            top: 123px;
+            width: 255px;
+            height: 40px;
+            left: 832px;
+            top: 125px;
             line-height: 32px;
             text-align: center;
             font-family: "Vortex";
@@ -259,57 +296,58 @@
 </head>
 
 <body>
-    <img src="Resources/Overlay/Scoreboard/Top BG 1.png" class="absol" alt="">
     <div id="overlayP1">
-        <img id="wlP1" class="scoreboardP1"/>
-        <div id=p1CharaMask>
-            <img id="p1Character" class="pCharacter"/>
-        </div>
 
-        <div id="scoresL">
-            <img id="scoreL1" class="scores" src="Resources/Overlay/VS Screen/Scores/Yellow 1.png">
-            <img id="scoreL2" class="scores" src="Resources/Overlay/VS Screen/Scores/Yellow 2.png">
-            <img id="scoreL3" class="scores" src="Resources/Overlay/VS Screen/Scores/Yellow 3.png">
-            <img id="p1Score" class="scoreboardP1"/>
-            <video id="p1ScoreUp" class="scoreboardP1"></video>
-        </div>
-
-        <img id="teamLogoP1" class="scoreboardP1"/>
-
-        <span id="p1Wrapper" class="wrappers">
-            <span id="p1Team" class="teams"></span>
-            <span id="p1Name" class="names"></span>
-        </span>
-    </div>
-
-    <div id="overlayP2">
-        <img id="wlP2" class="scoreboardP2Fixed"/>
-        <div id="iHateMasks">
-            <div id="p2CharaMask">
-                <img id="p2Character" class="pCharacter"/>
+        <div id="charP1">
+            <img src="Resources/Overlay/Scoreboard/Char BG L.png" class="charBG" id="p1charBG">
+            <div id=p1CharaMask>
+                <img id="p1Character" class="pCharacter"/>
             </div>
         </div>
 
-        <div id="scoresR">
-            <img id="scoreR1" class="scores" src="Resources/Overlay/VS Screen/Scores/Purple 1.png">
-            <img id="scoreR2" class="scores" src="Resources/Overlay/VS Screen/Scores/Purple 2.png">
-            <img id="scoreR3" class="scores" src="Resources/Overlay/VS Screen/Scores/Purple 3.png">
-            <img id="p2Score" class="scoreboardP2"/>
-            <video id="p2ScoreUp" class="scoreboardP2"></video>
+
+        <img id="scoreL" class="scores">
+
+        <img id="wlP1" class="scoreboardP1"/>
+
+        <div id="nameP1div">
+            <img src="Resources/Overlay/Scoreboard/Name BG.png" id="nameBGL">
+            <span id="p1Wrapper" class="wrappers">
+                <span id="p1Team" class="teams"></span>
+                <span id="p1Name" class="names"></span>
+            </span>
         </div>
 
-        <img id="teamLogoP2" class="scoreboardP2Fixed"/>
-
-        <span id="p2Wrapper" class="wrappers">
-            <span id="p2Team" class="teams"></span>
-            <span id="p2Name" class="names"></span>
-        </span>
     </div>
 
-    <img src="Resources/Overlay/Scoreboard/test.png" class="absol"/>
+    <div id="overlayP2">
+        <div id="charP2">
+            <img src="Resources/Overlay/Scoreboard/Char BG R.png" class="charBG" id="p2charBG">
+            <div id="iHateMasks">
+                <div id="p2CharaMask">
+                    <img id="p2Character" class="pCharacter"/>
+                </div>
+            </div>
+        </div>
+
+
+        <img id="scoreR" class="scores">
+
+        <img id="wlP2" class="scoreboardP2Fixed"/>
+
+        <div id="nameP2div">
+            <img src="Resources/Overlay/Scoreboard/Name BG.png" id="nameBGR">
+            <span id="p2Wrapper" class="wrappers">
+                <span id="p2Team" class="teams"></span>
+                <span id="p2Name" class="names"></span>
+            </span>
+        </div>
+
+    </div>
+
 
     <div id="overlayRound">
-        <!-- <img src="Resources/Overlay/Scoreboard/Round BG.png" id="roundBG"/> -->
+        <img src="Resources/Overlay/Scoreboard/Round BG.png" id="roundBG"/>
         <span id="round"></span>
     </div>
 

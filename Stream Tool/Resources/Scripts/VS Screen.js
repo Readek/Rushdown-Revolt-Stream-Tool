@@ -64,11 +64,11 @@ async function getData(scInfo) {
 		//starting with the player 1 name
 		updatePlayerName('p1Wrapper', 'p1Name', 'p1Team', player[1].name, player[1].tag);
 		//fade in the player text
-		fadeIn("#p1Wrapper", introDelay+.15);
+		fadeIn("#p1Wrapper", introDelay+.25);
 
 		//same for player 2
 		updatePlayerName('p2Wrapper', 'p2Name', 'p2Team', player[2].name, player[2].tag);
-		fadeIn("#p2Wrapper", introDelay+.15);
+		fadeIn("#p2Wrapper", introDelay+.25);
 
 
 		//set the character info for p1
@@ -95,6 +95,10 @@ async function getData(scInfo) {
 			scoreIntro("L", score[1], introDelay);
 			scoreIntro("R", score[2], introDelay);
 		}
+		//fade in the scores, hide if no names in case you want to do thumbnails or something idk
+		if (player[1].name && player[2].name) {
+			fadeIn("#scores", introDelay+.25);
+		}
 		p1ScorePrev = score[1];
 		p2ScorePrev = score[2];
 
@@ -104,11 +108,14 @@ async function getData(scInfo) {
 		bestOfPrev = bestOf;
 
 
-		//set the round text
+		//set the round and tournament texts
 		updateText("round", round, roundSize);
-
-		//set the tournament text
 		updateText("tournament", tournamentName, tournamentSize);
+		//if neither have anything, dont fade the thing
+		if (round || tournamentName) {
+			fadeIn("#roundInfo", introDelay+.25)
+		}
+
 
 		//set the caster info
 		updateText("caster1", caster[1].name, casterSize);
@@ -142,6 +149,10 @@ async function getData(scInfo) {
 			}
 		}, socialInterval);
 
+		//if no casters, dont show anything
+		if (caster[1].name || caster[2].name) {
+			fadeIn("#casterInfo", introDelay+.25);
+		}
 
 		startup = false; //next time we run this function, it will skip all we just did
 	}
@@ -159,6 +170,13 @@ async function getData(scInfo) {
 				//and fade the name back in
 				fadeIn("#p1Wrapper", .2);
 			});
+
+			//hide the score overlay when no texts
+			if (player[1].name || player[2].name) {
+				fadeIn("#scores");
+			} else {
+				fadeOut("#scores");
+			}
 		}
 
 		//same for player 2
@@ -168,6 +186,12 @@ async function getData(scInfo) {
 				updatePlayerName('p2Wrapper', 'p2Name', 'p2Team', player[2].name, player[2].tag);
 				fadeIn("#p2Wrapper", .2);
 			});
+
+			if (player[1].name || player[2].name) {
+				fadeIn("#scores");
+			} else {
+				fadeOut("#scores");
+			}
 		}
 
 
@@ -245,6 +269,13 @@ async function getData(scInfo) {
 				updateText("round", round, roundSize);
 				fadeIn("#round", .2);
 			});
+
+			//hide the background if no text is found
+			if (round || tournamentName) {
+				fadeIn("#roundInfo");
+			} else {
+				fadeOut("#roundInfo");
+			}
 		}
 
 		//update tournament text
@@ -253,6 +284,12 @@ async function getData(scInfo) {
 				updateText("tournament", tournamentName, tournamentSize);
 				fadeIn("#tournament", .2);
 			});
+
+			if (round || tournamentName) {
+				fadeIn("#roundInfo");
+			} else {
+				fadeOut("#roundInfo");
+			}
 		}
 
 
@@ -262,6 +299,12 @@ async function getData(scInfo) {
 				updateText("caster1", caster[1].name, casterSize);
 				fadeIn("#caster1", .2);
 			});
+			//hide the background if no caster names
+			if (caster[1].name || caster[2].name) {
+				fadeIn("#casterInfo");
+			} else {
+				fadeOut("#casterInfo");
+			}
 		}
 		//caster 1's twitter
 		if (document.getElementById('twitter1').textContent != caster[1].twitter){
@@ -280,6 +323,11 @@ async function getData(scInfo) {
 				updateText("caster2", caster[2].name, casterSize);
 				fadeIn("#caster2", .2);
 			});
+			if (caster[1].name || caster[2].name) {
+				fadeIn("#casterInfo");
+			} else {
+				fadeOut("#casterInfo");
+			}
 		}
 		if (document.getElementById('twitter2').textContent != caster[2].twitter){
 			twitter2 = caster[2].twitter;
@@ -515,11 +563,11 @@ function scoreUpdate(side, score) {
 //"best of" update
 function updateBo(bestOf) {
 	if (bestOf == "Bo5") {
-		document.getElementById("scoreL1").style.opacity = 1;
-		document.getElementById("scoreR1").style.opacity = 1;
+		fadeIn("#scoreL1");
+		fadeIn("#scoreR1");
 	} else {
-		document.getElementById("scoreL1").style.opacity = 0;
-		document.getElementById("scoreR1").style.opacity = 0;
+		fadeOut("#scoreL1");
+		fadeOut("#scoreR1");
 	}
 }
 

@@ -9,20 +9,6 @@
     
 
     <style>
-        @font-face {
-            font-family: "Deansgate";
-            src: url('Resources/Fonts/DeansgateCondensed-Bold.ttf');
-        }
-
-        @font-face {
-            font-family: "Roboto";
-            src: url('Resources/Fonts/Roboto-Bold.ttf');
-        }
-
-        @font-face {
-            font-family: "LemonMilk";
-            src: url('Resources/Fonts/LEMONMILK-Medium.otf');
-        }
 
         @font-face {
             font-family: "BlackHole";
@@ -54,31 +40,27 @@
         }
 
 
-        .scoreboardP1 {
+        #charP1 {
             position: absolute;
-            left: 0px;
-            top: 0px;
+            opacity: 0;
         }
-
         #p1CharaMask {
             -webkit-mask-image: url("Resources/Overlay/Scoreboard/Char Mask.png");
             width: 1920px;
             height: 1080px;
+            
         }
 
-        .scoreboardP2 {
+        #charP2 {
+            transform: rotateY(180deg); /* gsap shits itself if i use scaleX(-1) */
             position: absolute;
-            right: 0px;
-            top: 0px;
-            transform: scaleX(-1);
+            left: 2px;
         }
-
-        .scoreboardP2Fixed {
-            position: absolute;
-            right: 0px;
-            top: 0px;
+        #p2CharaMask {
+            -webkit-mask-image: url("Resources/Overlay/Scoreboard/Char Mask.png");
+            width: 1920px;
+            height: 1080px;
         }
-
 
         .charBG {
             position: absolute;
@@ -88,30 +70,11 @@
             left: 558px;
         }
         #p2charBG {
-            right: 556px;
-        }
-
-        #iHateMasks {
-            width: 1920px;
-            height: 1080px;
-            position: absolute;
-            left: 0px;
-            top: 0px;
-        }
-
-        #p2CharaMask {
-            -webkit-mask-image: url("Resources/Overlay/Scoreboard/Char Mask.png");
-            transform: scaleX(-1);
-            width: 1920px;
-            height: 1080px;
-            /* the scoreboard is a bit offcentered */
-            position: absolute;
-            left: 2px;
+            left: 558px;
         }
 
         .pCharacter {
             position: absolute;
-            opacity: 0;
             width: 100px;
             height: 100px;
             object-fit: contain;
@@ -136,7 +99,6 @@
             height: 54px;
             line-height: 54px;
             top: 2px;
-            opacity: 0;
         }
 
         #p1Wrapper {
@@ -157,12 +119,35 @@
             position: absolute;
             top: 0px;
             left: 693px;
+            opacity: 0;
         }
         #scoreR {
             position: absolute;
             top: 0px;
             right: 693px;
             transform: scaleX(-1);
+            opacity: 0;
+        }
+
+
+        #wlL, #wlR {
+            opacity: 0;
+        }
+        #wlBGL, #wlTextL {
+            position: absolute;
+            top: 62px;
+            left: 656px;
+        }
+        #wlBGR {
+            position: absolute;
+            top: 62px;
+            right: 654px;
+            transform: scaleX(-1);
+        }
+        #wlTextR {
+            position: absolute;
+            top: 62px;
+            right: 654px;
         }
 
 
@@ -180,8 +165,8 @@
             position: absolute;
             width: 255px;
             height: 40px;
-            left: 832px;
-            top: 125px;
+            left: 834px;
+            top: 126px;
             line-height: 32px;
             text-align: center;
             font-family: "Vortex";
@@ -202,7 +187,6 @@
             bottom: 475px;
             opacity: 0;
             font-family: "Vortex";
-            background-color: yellowgreen;
         }
 
         #p1Intro {
@@ -308,7 +292,10 @@
 
         <img id="scoreL" class="scores">
 
-        <img id="wlP1" class="scoreboardP1"/>
+        <div id="wlL" class="absol">
+            <img src="Resources/Overlay/Scoreboard/WL BG.png" id="wlBGL"/>
+            <img class="wlText" id="wlTextL">
+        </div>
 
         <div id="nameP1div">
             <img src="Resources/Overlay/Scoreboard/Name BG.png" id="nameBGL">
@@ -323,17 +310,18 @@
     <div id="overlayP2">
         <div id="charP2">
             <img src="Resources/Overlay/Scoreboard/Char BG R.png" class="charBG" id="p2charBG">
-            <div id="iHateMasks">
-                <div id="p2CharaMask">
-                    <img id="p2Character" class="pCharacter"/>
-                </div>
+            <div id="p2CharaMask">
+                <img id="p2Character" class="pCharacter"/>
             </div>
         </div>
 
 
         <img id="scoreR" class="scores">
 
-        <img id="wlP2" class="scoreboardP2Fixed"/>
+        <div id="wlR">
+            <img src="Resources/Overlay/Scoreboard/WL BG.png" id="wlBGR"/>
+            <img class="wlText" id="wlTextR">
+        </div>
 
         <div id="nameP2div">
             <img src="Resources/Overlay/Scoreboard/Name BG.png" id="nameBGR">

@@ -89,11 +89,11 @@ async function getData(scInfo) {
 
 		//set the intial score with an animation depending on the score
 		if (bestOf == "Bo3") { //+1 if bo3 so assets show alright
-			scoreIntro("L", score[1]+1, introDelay);
-			scoreIntro("R", score[2]+1, introDelay);
+			scoreIntro("L", score[1]+1, introDelay+.3);
+			scoreIntro("R", score[2]+1, introDelay+.3);
 		} else {
-			scoreIntro("L", score[1], introDelay);
-			scoreIntro("R", score[2], introDelay);
+			scoreIntro("L", score[1], introDelay+.3);
+			scoreIntro("R", score[2], introDelay+.3);
 		}
 		//fade in the scores, hide if no names in case you want to do thumbnails or something idk
 		if (player[1].name && player[2].name) {

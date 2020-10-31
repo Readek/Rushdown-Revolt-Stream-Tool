@@ -49,7 +49,7 @@ async function getData(scInfo) {
 
 			//this vid is just the bars moving (todo: maybe do it through javascript?)
 			setTimeout(() => { 
-				document.getElementById('introVid').setAttribute('src', 'Resources/Webms/Intro.webm');
+				document.getElementById('introVid').setAttribute('src', 'Resources/Overlay/Scoreboard/Intro.webm');
 				document.getElementById('introVid').play();
 			}, 0); //if you need it to start later, change that 0 (and also update the introDelay)
 
@@ -122,47 +122,65 @@ async function getData(scInfo) {
 		//update player name and team name texts
 		updatePlayerName('p1Wrapper', 'p1Name', 'p1Team', player[1].name, player[1].tag);
 		//sets the starting position for the player text, then fades in and moves the p1 text to the next keyframe
+		gsap.fromTo("#nameP1div", 
+			{x: -pMove, opacity: 0}, //from
+			{delay: introDelay+.25, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime}); //to
 		gsap.fromTo("#p1Wrapper", 
-			{x: -pMove}, //from
-			{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime}); //to
+			{x: -pMove},
+			{delay: introDelay+.3, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
 
 		//set the character image for the player
 		await updateChar(player[1].character, 'p1Character');
-		//when the image finishes loading, fade-in-move the character icon to the overlay
-		initCharaFade("#p1Character");
+		//when the image finishes loading, fade-in-move the character to the overlay
+		gsap.fromTo("#charP1",
+			{x: -pCharMove*2},
+			{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
 		//save the character/skin so we run the character change code only when this doesnt equal to the next
 		p1CharacterPrev = player[1].character;
 
 		//if its grands, we need to show the [W] and/or the [L] on the players
-		updateWL(wl[1], "1");
-		gsap.fromTo("#wlP1",
-			{y: -pMove}, //set starting position some pixels up (it will be covered by the overlay)
-			{delay: introDelay+.5, y: 0, ease: "power2.out", duration: .5}); //move down to its default position
+		if (wl[1] != "Nada") {
+			updateWL(wl[1], "L");
+			gsap.fromTo("#wlL",
+				{x: -pMove},
+				{delay: introDelay+.5, x: 0, opacity: 1, ease: "power2.out", duration: .5});
+		}
 		//save for later so the animation doesn't repeat over and over
 		p1wlPrev = wl[1];
+		
 
 		//set the current score
 		updateScore('scoreL', score[1], bestOf, "L");
+		//fade the score image in with the rest of the overlay
+		fadeIn("#scoreL", introDelay);
 		p1ScorePrev = score[1];
 
 
 		//took notes from player 1? well, this is exactly the same!
 		updatePlayerName('p2Wrapper', 'p2Name', 'p2Team', player[2].name, player[2].tag);
+		gsap.fromTo("#nameP2div", 
+			{x: pMove, opacity: 0},
+			{delay: introDelay+.25, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
 		gsap.fromTo("#p2Wrapper", 
 			{x: pMove},
-			{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
+			{delay: introDelay+.3, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
 
 		await updateChar(player[2].character, 'p2Character');
-		initCharaFade("#p2Character");
+		gsap.fromTo("#charP2",
+			{x: pCharMove*2, opacity: 0},
+			{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
 		p2CharacterPrev = player[2].character;
 
-		updateWL(wl[2], "2");
-		gsap.fromTo("#wlP2",
-			{y: -pMove},
-			{delay: introDelay+.5, y: 0, ease: "power2.out", duration: .5});
+		if (wl[2] != "Nada") {
+			updateWL(wl[2], "R");
+			gsap.fromTo("#wlR",
+				{x: pMove, opacity: 0},
+				{delay: introDelay+.5, x: 0, opacity: 1, ease: "power2.out", duration: .5});
+		}
 		p2wlPrev = wl[2];
 
 		updateScore('scoreR', score[2], bestOf, "R");
+		fadeIn("#scoreR", introDelay);
 		p2ScorePrev = score[2];
 
 
@@ -176,9 +194,9 @@ async function getData(scInfo) {
 		}
 
 
-		//dont forget to update the border if its Bo3 or Bo5!
-		/* updateBorder(bestOf); */
+		//setup for later
 		bestOfPrev = bestOf;
+
 
 		startup = false; //next time we run this function, it will skip all we just did
 	}
@@ -213,12 +231,14 @@ async function getData(scInfo) {
 		//the [W] and [L] status for grand finals
 		if (p1wlPrev != wl[1]) {
 			//move it away!
-			gsap.to("#wlP1", {y: -pMove, ease: "power1.in", duration: .5, onComplete: pwlMoved});
+			gsap.to("#wlL", {x: -pCharMove, opacity: 0, ease: "power1.in", duration: fadeOutTime, onComplete: pwlMoved});
 			function pwlMoved() {
 				//change the thing!
-				updateWL(wl[1], "1");
+				updateWL(wl[1], "L");
 				//move it back!
-				gsap.to("#wlP1", {delay: .1, y: 0, ease: "power2.out", duration: .5});
+				if (wl[1] != "Nada") {
+					gsap.to("#wlL", {delay: .3, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
+				}
 			}
 			p1wlPrev = wl[1];
 		}
@@ -248,10 +268,12 @@ async function getData(scInfo) {
 		}
 
 		if (p2wlPrev != wl[2]) {
-			gsap.to("#wlP2", {y: -pMove, ease: "power1.in", duration: .5, onComplete: pwlMoved});
+			gsap.to("#wlR", {x: pCharMove, opacity: 0, ease: "power1.in", duration: fadeOutTime, onComplete: pwlMoved});
 			function pwlMoved() {
-				updateWL(wl[2], "2");
-				gsap.to("#wlP2", {delay: .1, y: 0, ease: "power2.out", duration: .5});
+				updateWL(wl[2], "R");
+				if (wl[2] != "Nada") {
+					gsap.to("#wlR", {delay: .3, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
+				}
 			}
 			p2wlPrev = wl[2];
 		}
@@ -264,10 +286,9 @@ async function getData(scInfo) {
 
 		//change border depending of the Best Of status
 		if (bestOfPrev != bestOf) {
-			/* updateBorder(bestOf); */ //update the border
-			//update the score ticks so they fit the bestOf border
-			updateScore('p1Score', score[1], bestOf, "p1ScoreUp", false);
-			updateScore('p2Score', score[2], bestOf, "p2ScoreUp", false);
+			//update the score ticks
+			updateScore('scoreL', score[1], bestOf, "L");
+			updateScore('scoreR', score[2], bestOf, "R");
 			bestOfPrev = bestOf;
 		}
 
@@ -355,8 +376,8 @@ function fadeOutMove(itemID, move, funct) {
 }
 
 //fade in
-function fadeIn(itemID) {
-	gsap.to(itemID, {delay: .2, opacity: 1, duration: fadeInTime});
+function fadeIn(itemID, timeDelay = .2) {
+	gsap.to(itemID, {delay: timeDelay, opacity: 1, duration: fadeInTime});
 }
 
 //fade in but with movement
@@ -375,22 +396,26 @@ function fadeInChara(itemID, charScale) {
 //fade in for the characters when first loading
 function initCharaFade(charaID) {
 	gsap.fromTo(charaID,
-		{x: -pCharMove},
-		{delay: introDelay+.25, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
+		{x: -pCharMove, opacity: 0},
+		{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
 }
 
 //check if winning or losing in a GF, then change image
-function updateWL(pWL, playerNum) {
-	const pWLEL = document.getElementById('wlP' + playerNum);
+function updateWL(pWL, side) {
+	const pWLEL = document.getElementById('wlText' + side);
 	if (pWL == "W") {
-		pWLEL.setAttribute('src', 'Resources/Overlay/Winners P' + playerNum + '.png')
+		pWLEL.setAttribute('src', 'Resources/Overlay/Scoreboard/Winners.png')
 	} else if (pWL == "L") {
-		pWLEL.setAttribute('src', 'Resources/Overlay/Losers P' + playerNum + '.png')
+		pWLEL.setAttribute('src', 'Resources/Overlay/Scoreboard/Losers.png')
 	} else if (pWL == "Nada") {
 		pWLEL.setAttribute('src', 'Resources/Literally Nothing.png')
 	}
 
-	if (startup) {pWLEL.addEventListener("error", () => {showNothing(pWLEL)})}
+	if (startup) {
+		pWLEL.addEventListener("error", () => {
+			showNothing(pWLEL);
+		})
+	}
 }
 
 //text resize, keeps making the text smaller until it fits

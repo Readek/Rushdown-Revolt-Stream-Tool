@@ -125,9 +125,7 @@ async function getData(scInfo) {
 		gsap.fromTo("#nameP1div", 
 			{x: -pMove, opacity: 0}, //from
 			{delay: introDelay+.25, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime}); //to
-		gsap.fromTo("#p1Wrapper", 
-			{x: -pMove},
-			{delay: introDelay+.3, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
+
 
 		//set the character image for the player
 		await updateChar(player[1].character, 'p1Character');
@@ -135,7 +133,7 @@ async function getData(scInfo) {
 		gsap.fromTo("#charP1",
 			{x: -pCharMove*2},
 			{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
-		//save the character/skin so we run the character change code only when this doesnt equal to the next
+		//save the character value so we run the character change code only when this doesnt equal to the next
 		p1CharacterPrev = player[1].character;
 
 		//if its grands, we need to show the [W] and/or the [L] on the players
@@ -161,9 +159,6 @@ async function getData(scInfo) {
 		gsap.fromTo("#nameP2div", 
 			{x: pMove, opacity: 0},
 			{delay: introDelay+.25, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
-		gsap.fromTo("#p2Wrapper", 
-			{x: pMove},
-			{delay: introDelay+.3, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
 
 		await updateChar(player[2].character, 'p2Character');
 		gsap.fromTo("#charP2",
@@ -221,9 +216,9 @@ async function getData(scInfo) {
 			//fade out the image while also moving it because that always looks cool
 			fadeOutMove("#p1Character", -pCharMove, async () => {
 				//now that nobody can see it, lets change the image!
-				const charScale = await updateChar(player[1].character, 'p1Character'); //will return scale
+				await updateChar(player[1].character, 'p1Character'); //will return scale
 				//and now, fade it in
-				fadeInChara("#p1Character", charScale);
+				fadeInChara("#p1Character");
 			});
 			p1CharacterPrev = player[1].character;
 		}
@@ -261,8 +256,8 @@ async function getData(scInfo) {
 
 		if (p2CharacterPrev != player[2].character) {
 			fadeOutMove("#p2Character", -pCharMove, async () => {
-				const charScale = await updateChar(player[2].character, 'p2Character'); //will return scale
-				fadeInChara("#p2Character", charScale);
+				await updateChar(player[2].character, 'p2Character'); //will return scale
+				fadeInChara("#p2Character");
 			});
 			p2CharacterPrev = player[2].character;
 		}
@@ -284,9 +279,8 @@ async function getData(scInfo) {
 		}
 
 
-		//change border depending of the Best Of status
+		//if the "bestOf" status changed, update the score ticks
 		if (bestOfPrev != bestOf) {
-			//update the score ticks
 			updateScore('scoreL', score[1], bestOf, "L");
 			updateScore('scoreR', score[2], bestOf, "R");
 			bestOfPrev = bestOf;
@@ -295,8 +289,6 @@ async function getData(scInfo) {
 		
 		//update the round text
 		if (document.getElementById('round').textContent != round){
-			console.log(document.getElementById('round').textContent);
-			console.log(round);
 			if (round) { //if theres actual text
 				if (document.getElementById("overlayRound").style.opacity == 0) {
 					updateRound(round);
@@ -349,7 +341,7 @@ function updateScore(scoreID, pScore, bestOf, side) {
 //player text change
 function updatePlayerName(wrapperID, nameID, teamID, pName, pTeam) {
 	const nameEL = document.getElementById(nameID);
-	nameEL.style.fontSize = '40px'; //set original text size
+	nameEL.style.fontSize = '36px'; //set original text size
 	nameEL.textContent = pName; //change the actual text
 	const teamEL = document.getElementById(teamID);
 	teamEL.style.fontSize = '25px';
@@ -386,11 +378,8 @@ function fadeInMove(itemID) {
 }
 
 //fade in but for the character image
-function fadeInChara(itemID, charScale) {
-	gsap.fromTo(itemID,
-		{scale: charScale}, //set scale keyframe so it doesnt scale while transitioning
-		{delay: .2, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime}
-	);
+function fadeInChara(itemID) {
+	gsap.to(itemID, {delay: .2, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
 }
 
 //fade in for the characters when first loading
@@ -506,6 +495,4 @@ async function updateChar(pCharacter, charID) {
 	charEL.style.left = charPos[0] + "px";
 	charEL.style.top = charPos[1] + "px";
 	charEL.style.transform = "scale(" + charPos[2] + ")";
-
-	return charPos[2]; //we need this one to set scale keyframe when fading back
 }

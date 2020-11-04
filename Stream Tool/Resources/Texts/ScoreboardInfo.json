@@ -14,7 +14,7 @@
     {
       "name": "Player 3",
       "tag": "Tag 3",
-      "character": "Ashani"
+      "character": "Raymer"
     },
     {
       "name": "Player 4",
@@ -24,7 +24,7 @@
     {
       "name": "Player 5",
       "tag": "Tag 5",
-      "character": "Weishan"
+      "character": "Zhurong"
     },
     {
       "name": "Player 6",
@@ -47,7 +47,7 @@
     "Nada",
     "Nada"
   ],
-  "gamemode": 1,
+  "gamemode": 3,
   "bestOf": "Bo5",
   "round": "Winners Finals",
   "tournamentName": "A Tournament 123",

@@ -74,10 +74,10 @@
             top: 335px;
             opacity: .5;
         }
-        #bgImgP1 {
+        #bgImgL {
             left: 180px;
         }
-        #bgImgP2 {
+        #bgImgR {
             right: 180px;
         }
 
@@ -124,24 +124,23 @@
 
         .wrappers {
             position: absolute;
-            width: 800px;
+            width: 840px;
             height: 120px;
             bottom: 40px;
             line-height: 90px;
             font-family: "Vortex";
             text-align: center;
             white-space: nowrap;
-            text-shadow: 1px 1px 10px rgba(0, 0, 0, 0.7);
             opacity: 0;
             text-transform: uppercase;
         }
 
-        #p1Wrapper {
-            left: 81px;
+        #leftWrapper, #leftTeam {
+            left: 61px;
         }
 
-        #p2Wrapper {
-            right: 81px;
+        #rightWrapper, #rightTeam {
+            right: 61px;
         }
 
         .name {
@@ -149,7 +148,7 @@
             -webkit-text-stroke-color: #fff;
         }
 
-        .team {
+        .tag {
             -webkit-text-stroke-width: 2px;
             -webkit-text-stroke-color: #fff;
         }
@@ -253,10 +252,19 @@
         }
 
 
-        #vsOverlay {
-            width: 1920px;
-            height: 1080px;
-            object-fit: fill;
+        .doubles, .trios {
+            display: none;
+        }
+
+        .slash {
+            font-size: 70px;
+            color: white;
+            font-family: "Vortex";
+        }
+
+        .absolR {
+            position: absolute;
+            right: 0px;
         }
     </style>
 </head>
@@ -268,33 +276,34 @@
 
     <div id="charas">
         <div class="absol oneEighty" id="charsLeft">
-            <div id="charP1">
-                <img class="background" id="bgImgP1"/>
+            <img class="background" id="bgImgL"/>
+            <div id="charP1" class="absol">
                 <img class="character" id="charImgP1"/>
             </div>
-            <div id="charP3">
+            <div id="charP3" class="absol">
                 <img class="character" id="charImgP3"/>
             </div>
-            <div id="charP5">
+            <div id="charP5" class="absol">
                 <img class="character" id="charImgP5"/>
             </div>
         </div>
 
         <div class="absol oneEighty" id="charsRight">
-            <div id="charP2">
-                <img class="background" id="bgImgP2"/>
+            <img class="background" id="bgImgR"/>
+            <div id="charP2" class="absolR">
                 <img class="character" id="charImgP2"/>
             </div>
-            <div id="charP4">
-                <img class="character" id="charImgP2"/>
+            <div id="charP4" class="absolR">
+                <img class="character" id="charImgP4"/>
             </div>
-            <div id="charP6">
-                <img class="character" id="charImgP2"/>
+            <div id="charP6" class="absolR">
+                <img class="character" id="charImgP6"/>
             </div>
         </div>
     </div>
 
-    <img src="Resources/Overlay/VS Screen/VS Overlay.png" class="absol" id="vsOverlay"/>
+    <img src="Resources/25.png" class="absol" id="separator">
+    <img src="Resources/Overlay/VS Screen/VS Overlay.png" class="absol"/>
 
     <div id="scores">
         <div id="scoresLeft">
@@ -312,14 +321,28 @@
     </div>
 
     <div id="playerTexts">
-        <span id="p1Wrapper" class="wrappers">
-            <span id="p1Team" class="team gold"></span>
+        <span id="leftTeam" class="name gold wrappers">A team name 1</span>
+        <span id="leftWrapper" class="wrappers">
+            <span id="p1Tag" class="tag gold"></span>
             <span id="p1Name" class="name gold"></span>
+            <span class="slash doubles trios" id="slashL1">/</span>
+            <span id="p3Tag" class="tag gold doubles trios"></span>
+            <span id="p3Name" class="name gold doubles trios"></span>
+            <span class="slash trios" id="slashL2">/</span>
+            <span id="p5Tag" class="tag gold trios"></span>
+            <span id="p5Name" class="name gold trios"></span>
         </span>
 
-        <span id="p2Wrapper" class="wrappers">
-            <span id="p2Team" class="team purple"></span>
+        <span id="rightTeam" class="name purple wrappers">Team Name Dos</span>
+        <span id="rightWrapper" class="wrappers">
+            <span id="p2Tag" class="tag purple"></span>
             <span id="p2Name" class="name purple"></span>
+            <span class="slash doubles trios" id="slashR1">/</span>
+            <span id="p4Tag" class="tag purple doubles trios"></span>
+            <span id="p4Name" class="name purple doubles trios"></span>
+            <span class="slash trios" id="slashR2">/</span>
+            <span id="p6Tag" class="tag purple trios"></span>
+            <span id="p6Name" class="name purple trios"></span>
         </span>
     </div>
 

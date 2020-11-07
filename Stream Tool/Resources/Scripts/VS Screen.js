@@ -15,7 +15,7 @@ const twitterSize = '35px';
 
 //to avoid the code constantly running the same method over and over
 let p1CharacterPrev, p2CharacterPrev, p3CharacterPrev, p4CharacterPrev, p5CharacterPrev, p6CharacterPrev;
-let p1ScorePrev, p2ScorePrev;
+let leftScorePrev, rightScorePrev;
 let bestOfPrev;
 
 //variables for the twitter/twitch constant change
@@ -210,8 +210,8 @@ async function getData(scInfo) {
 		if (player[1].name && player[2].name) {
 			fadeIn("#scores", introDelay+.25);
 		}
-		p1ScorePrev = score[1];
-		p2ScorePrev = score[2];
+		leftScorePrev = score[1];
+		rightScorePrev = score[2];
 
 
 		//set the initial "best of" status
@@ -457,25 +457,25 @@ async function getData(scInfo) {
 
 
 		//update the score if it changed
-		if (p1ScorePrev != score[1]) {
+		if (leftScorePrev != score[1]) {
 			//if this is best of 3, we will add +1 to the score count to change the right assets
 			if (bestOf == "Bo3") {
 				scoreUpdate("L", score[1]+1);
 			} else {
 				scoreUpdate("L", score[1]);
 			}
-			p1ScorePrev = score[1];
+			leftScorePrev = score[1];
 		}
 
 		//time for the right side
-		if (p2ScorePrev != score[2]) {
+		if (rightScorePrev != score[2]) {
 			//if this is best of 3, we will add +1 to the score count to change the right assets
 			if (bestOf == "Bo3") {
 				scoreUpdate("R", score[2]+1);
 			} else {
 				scoreUpdate("R", score[2]);
 			}
-			p2ScorePrev = score[2];
+			rightScorePrev = score[2];
 		}
 
 

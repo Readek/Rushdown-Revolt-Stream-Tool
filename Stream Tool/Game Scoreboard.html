@@ -40,36 +40,41 @@
         }
 
 
-        #charP1 {
+        #charP1, #charP3, #charP5 {
             position: absolute;
             opacity: 0;
         }
-        #p1CharaMask {
+        #charP2, #charP4, #charP6 {
+            transform: rotateY(180deg); /* gsap shits itself if i use scaleX(-1) */
+            position: absolute;
+            left: 2px;
+            opacity: 0;
+        }
+        #charP3 {
+            top: 57px;
+            left: 121px;
+        }
+        #charP4 {
+            top: 57px;
+            right: -19px;
+        }
+
+        .charMask {
             -webkit-mask-image: url("Resources/Overlay/Scoreboard/Char Mask.png");
             width: 1920px;
             height: 1080px;
             
         }
 
-        #charP2 {
-            transform: rotateY(180deg); /* gsap shits itself if i use scaleX(-1) */
-            position: absolute;
-            left: 2px;
-        }
-        #p2CharaMask {
-            -webkit-mask-image: url("Resources/Overlay/Scoreboard/Char Mask.png");
-            width: 1920px;
-            height: 1080px;
-        }
 
         .charBG {
             position: absolute;
             top: 4px;
         }
-        #p1charBG {
+        #p1charBG, #p3charBG, #p5charBG {
             left: 558px;
         }
-        #p2charBG {
+        #p2charBG, #p4charBG, #p6charBG {
             left: 558px;
         }
 
@@ -100,17 +105,18 @@
             line-height: 54px;
             top: 2px;
             text-align: center;
+            opacity: 0;
         }
 
-        #p1Wrapper {
+        #leftWrapper, #leftTeam {
             left: 275px;
         }
 
-        #p2Wrapper {
-            right: 275px;
+        #rightWrapper, #rightTeam {
+            right: 273px;
         }
 
-        .teams {
+        .tag {
             color: lightgray;
         }
 
@@ -132,6 +138,7 @@
 
         #wlL, #wlR {
             opacity: 0;
+            position: absolute;
         }
         #wlBGL, #wlTextL {
             position: absolute;
@@ -276,6 +283,17 @@
             opacity: 0;
         }
 
+
+        
+        .doubles, .trios {
+            display: none;
+        }
+
+        .slash {
+            font-size: 70px;
+            color: white;
+        }
+
     </style>
 </head>
 
@@ -284,8 +302,20 @@
 
         <div id="charP1">
             <img src="Resources/Overlay/Scoreboard/Char BG L.png" class="charBG" id="p1charBG">
-            <div id=p1CharaMask>
+            <div class="charMask">
                 <img id="p1Character" class="pCharacter"/>
+            </div>
+        </div>
+        <div id="charP3" class="doubles trios">
+            <img src="Resources/Overlay/Scoreboard/Char BG L.png" class="charBG" id="p3charBG">
+            <div class="charMask">
+                <img id="p3Character" class="pCharacter"/>
+            </div>
+        </div>
+        <div id="charP5" class="trios">
+            <img src="Resources/Overlay/Scoreboard/Char BG L.png" class="charBG" id="p5charBG">
+            <div class="charMask">
+                <img id="p5Character" class="pCharacter"/>
             </div>
         </div>
 
@@ -299,9 +329,16 @@
 
         <div id="nameP1div">
             <img src="Resources/Overlay/Scoreboard/Name BG.png" id="nameBGL">
-            <span id="p1Wrapper" class="wrappers">
-                <span id="p1Team" class="teams"></span>
-                <span id="p1Name" class="names"></span>
+            <span id="leftTeam" class="name wrappers doubles trios"></span>
+            <span id="leftWrapper" class="wrappers">
+                <span id="p1Tag" class="tag"></span>
+                <span id="p1Name" class="name"></span>
+                <span class="slash doubles trios" id="slashL1">/</span>
+                <span id="p3Tag" class="tag doubles trios"></span>
+                <span id="p3Name" class="name doubles trios"></span>
+                <span class="slash trios" id="slashL2">/</span>
+                <span id="p5Tag" class="tag trios"></span>
+                <span id="p5Name" class="name trios"></span>
             </span>
         </div>
 
@@ -310,8 +347,20 @@
     <div id="overlayP2">
         <div id="charP2">
             <img src="Resources/Overlay/Scoreboard/Char BG R.png" class="charBG" id="p2charBG">
-            <div id="p2CharaMask">
+            <div class="charMask">
                 <img id="p2Character" class="pCharacter"/>
+            </div>
+        </div>
+        <div id="charP4" class="doubles trios">
+            <img src="Resources/Overlay/Scoreboard/Char BG R.png" class="charBG" id="p4charBG">
+            <div class="charMask">
+                <img id="p4Character" class="pCharacter"/>
+            </div>
+        </div>
+        <div id="charP6" class="trios">
+            <img src="Resources/Overlay/Scoreboard/Char BG R.png" class="charBG" id="p6charBG">
+            <div class="charMask">
+                <img id="p6Character" class="pCharacter"/>
             </div>
         </div>
 
@@ -325,9 +374,16 @@
 
         <div id="nameP2div">
             <img src="Resources/Overlay/Scoreboard/Name BG.png" id="nameBGR">
-            <span id="p2Wrapper" class="wrappers">
-                <span id="p2Team" class="teams"></span>
-                <span id="p2Name" class="names"></span>
+            <span id="rightTeam" class="name wrappers doubles trios"></span>
+            <span id="rightWrapper" class="wrappers">
+                <span id="p2Tag" class="tag"></span>
+                <span id="p2Name" class="name"></span>
+                <span class="slash doubles trios" id="slashR1">/</span>
+                <span id="p4Tag" class="tag doubles trios"></span>
+                <span id="p4Name" class="name doubles trios"></span>
+                <span class="slash trios" id="slashR2">/</span>
+                <span id="p6Tag" class="tag trios"></span>
+                <span id="p6Name" class="name trios"></span>
             </span>
         </div>
 

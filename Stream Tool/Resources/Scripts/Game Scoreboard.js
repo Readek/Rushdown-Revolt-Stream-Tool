@@ -6,10 +6,22 @@ const fadeInTime = .3; //(seconds)
 const fadeOutTime = .2;
 let introDelay = .8; //all animations will get this delay when the html loads (use this so it times with your transition)
 
+//max text sizes (used when resizing back)
+const nameSizeIntro = '110px';
+const nameSize = '36px';
+const tagSize = '25px';
+const roundSize = '30px';
+
 //to avoid the code constantly running the same method over and over
-let p1CharacterPrev, p1ScorePrev, p1wlPrev;
-let p2CharacterPrev, p2ScorePrev, p2wlPrev;
+let p1CharacterPrev, p2CharacterPrev, p3CharacterPrev, p4CharacterPrev, p5CharacterPrev, p6CharacterPrev;
+let leftScorePrev, p1wlPrev, rightScorePrev, p2wlPrev;
 let bestOfPrev;
+
+//team/player texts intervals
+let leftInt, rightInt;
+let sideSwitch = true; //true = teams, false = players
+const sideTimer = 12000;
+
 
 let startup = true;
 
@@ -59,9 +71,9 @@ async function getData(scInfo) {
 				const p2IntroEL = document.getElementById('p2Intro');
 
 				p1IntroEL.textContent = player[1].name; //update player 1 intro text
-				p1IntroEL.style.fontSize = '110px'; //resize the font to its max size
+				p1IntroEL.style.fontSize = nameSizeIntro; //resize the font to its max size
 				resizeText(p1IntroEL); //resize the text if its too large
-				p2IntroEL.style.fontSize = '110px';
+				p2IntroEL.style.fontSize = nameSizeIntro;
 				p2IntroEL.textContent = player[2].name; //p2
 				resizeText(p2IntroEL);
 
@@ -118,23 +130,92 @@ async function getData(scInfo) {
 			introDelay = 2.6;
 		}
 
-		//finally out of the intro, now lets start with player 1 first
-		//update player name and team name texts
-		updatePlayerName('p1Wrapper', 'p1Name', 'p1Team', player[1].name, player[1].tag);
-		//sets the starting position for the player text, then fades in and moves the p1 text to the next keyframe
+		//finally out of the intro, lets check the gamemode and show whats needed
+		if (gamemode == 2) {
+			const doubles = document.getElementsByClassName("doubles");
+			Array.from(doubles).forEach(el => {
+				el.style.display = "inline";
+			});
+
+			document.getElementById("nameBGL").setAttribute('src', "Resources/Overlay/Scoreboard/Name BG Duo.png");
+			document.getElementById("nameBGL").style.left = "301px";
+			document.getElementById("leftWrapper").style.left = "360px";
+			document.getElementById("leftTeam").style.left = "360px";
+			document.getElementById("leftWrapper").style.width = "340px";
+			document.getElementById("leftTeam").style.width = "340px";
+
+			document.getElementById("nameBGR").setAttribute('src', "Resources/Overlay/Scoreboard/Name BG Duo.png");
+			document.getElementById("nameBGR").style.right = "299px";
+			document.getElementById("rightWrapper").style.right = "358px";
+			document.getElementById("rightTeam").style.right = "358px";
+			document.getElementById("rightWrapper").style.width = "340px";
+			document.getElementById("rightTeam").style.width = "340px";
+
+
+			document.getElementById("charP1").style.top = "57px";
+			document.getElementById("charP1").style.left = "-17px";
+			document.getElementById("charP2").style.top = "57px";
+			document.getElementById("charP2").style.right = "119px";
+
+			document.getElementById("wlL").style.left = "-275px";
+			document.getElementById("wlR").style.right = "-275px";
+
+		} else if (gamemode == 3) {
+			const trios = document.getElementsByClassName("trios");
+			Array.from(trios).forEach(el => {
+				el.style.display = "inline";
+			});
+
+		}
+		//update player names and tags
+		updatePlayerTexts(player, "left", "L");
+		//we will also update the team name
+		updateText('leftTeam', teamName[1], nameSize);
+
+		//if singles, just show the player texts
+		if (gamemode == 1) {
+			fadeIn("#leftWrapper", introDelay+.25);
+		} else {
+			//if the team name exists
+			if (teamName[1]) {
+				fadeIn("#leftTeam", introDelay+.25); //show team name
+				//keep changing team name and player names
+				leftInt = setInterval(() => {
+					switchTexts("left");
+				}, sideTimer);
+			} else { //if no team name, just show player texts
+				fadeIn("#leftWrapper", introDelay+.25);
+			}
+		}
+
+		//sets the starting position for the player text container, then fades in and moves the text to the next keyframe
 		gsap.fromTo("#nameP1div", 
 			{x: -pMove, opacity: 0}, //from
-			{delay: introDelay+.25, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime}); //to
+			{delay: introDelay+.25, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime} //to
+		);
 
 
 		//set the character image for the player
 		await updateChar(player[1].character, 'p1Character');
 		//when the image finishes loading, fade-in-move the character to the overlay
-		gsap.fromTo("#charP1",
-			{x: -pCharMove*2},
-			{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
-		//save the character value so we run the character change code only when this doesnt equal to the next
+		if (gamemode == 1) {
+			initCharaFade("#charP1", -pCharMove*2, introDelay);
+		} else {
+			initCharaFade("#charP1", -pCharMove*2, introDelay+.3);
+		}
+		//do the same for the other characters if doubles or trios
+		if (gamemode == 2 || gamemode == 3) {
+			await updateChar(player[3].character, 'p3Character');
+			initCharaFade("#charP3", -pCharMove*2, introDelay);
+			if (gamemode == 3) {
+				/*  */
+			}
+		}
+
+		//save the character values so we run the character change code only when this doesnt equal to the next
 		p1CharacterPrev = player[1].character;
+		p3CharacterPrev = player[3].character;
+		p5CharacterPrev = player[5].character;
 
 		//if its grands, we need to show the [W] and/or the [L] on the players
 		if (wl[1] != "Nada") {
@@ -151,20 +232,44 @@ async function getData(scInfo) {
 		updateScore('scoreL', score[1], bestOf, "L");
 		//fade the score image in with the rest of the overlay
 		fadeIn("#scoreL", introDelay);
-		p1ScorePrev = score[1];
+		leftScorePrev = score[1];
 
 
 		//took notes from player 1? well, this is exactly the same!
-		updatePlayerName('p2Wrapper', 'p2Name', 'p2Team', player[2].name, player[2].tag);
+		updatePlayerTexts(player, "right", "R");
+		updateText('rightTeam', teamName[2], nameSize);
+
+		if (gamemode == 1) {
+			fadeIn("#rightWrapper", introDelay+.25);
+		} else {
+			if (teamName[2]) {
+				fadeIn("#rightTeam", introDelay+.25);
+				rightInt = setInterval(() => {
+					switchTexts("right");
+				}, sideTimer);
+			} else {
+				fadeIn("#rightWrapper", introDelay+.25);
+			}
+		}
 		gsap.fromTo("#nameP2div", 
 			{x: pMove, opacity: 0},
-			{delay: introDelay+.25, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
+			{delay: introDelay+.25, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime}
+		);
+
 
 		await updateChar(player[2].character, 'p2Character');
-		gsap.fromTo("#charP2",
-			{x: pCharMove*2, opacity: 0},
-			{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
+		initCharaFade("#charP2", pCharMove*2, introDelay);
+		if (gamemode == 2 || gamemode == 3) {
+			await updateChar(player[4].character, 'p4Character');
+			initCharaFade("#charP4", pCharMove*2, introDelay + .3);
+			if (gamemode == 3) {
+				/*  */
+			}
+		}
 		p2CharacterPrev = player[2].character;
+		p4CharacterPrev = player[4].character;
+		p6CharacterPrev = player[6].character;
+
 
 		if (wl[2] != "Nada") {
 			updateWL(wl[2], "R");
@@ -174,13 +279,24 @@ async function getData(scInfo) {
 		}
 		p2wlPrev = wl[2];
 
+
 		updateScore('scoreR', score[2], bestOf, "R");
 		fadeIn("#scoreR", introDelay);
-		p2ScorePrev = score[2];
+		rightScorePrev = score[2];
+
+
+		//this is what decides when to change the players/team text
+		setInterval(() => {
+			if (sideSwitch) {
+				sideSwitch = false;
+			} else {
+				sideSwitch = true;
+			};
+		}, sideTimer);
 
 
 		//update the round text
-		updateRound(round);
+		updateText("round", round, roundSize);
 		//fade it in, but only if theres text
 		if (round != "") {
 			gsap.to("#overlayRound", {delay: introDelay, opacity: 1, ease: "power2.out", duration: fadeInTime+.2});
@@ -201,26 +317,80 @@ async function getData(scInfo) {
 
 		//player 1 time!
 		if (document.getElementById('p1Name').textContent != player[1].name ||
-			document.getElementById('p1Team').textContent != player[1].tag) {
+			document.getElementById('p1Tag').textContent != player[1].tag ||
+			document.getElementById('p3Name').textContent != player[3].name ||
+			document.getElementById('p3Tag').textContent != player[3].tag ||
+			document.getElementById('p5Name').textContent != player[5].name ||
+			document.getElementById('p5Tag').textContent != player[5].tag) { //well this is ugly
 			//move and fade out the player 1's text
-			fadeOutMove("#p1Wrapper", -pMove, () => {
+			fadeOut("#leftWrapper", () => {
 				//now that nobody is seeing it, quick, change the text's content!
-				updatePlayerName('p1Wrapper', 'p1Name', 'p1Team', player[1].name, player[1].tag);
-				//fade the name back in with a sick movement
-				fadeInMove("#p1Wrapper");
+				updatePlayerTexts(player, "left", "L");
+				//fade the text back in with a sick movement
+				if (!sideSwitch || !teamName[1]) {
+					fadeIn("#leftWrapper", .2);
+				}
 			});
 		}
+
+		//team check
+		if (document.getElementById('leftTeam').textContent != teamName[1] && gamemode != 1) {
+			const prevText = document.getElementById("leftTeam").textContent;
+			fadeOut("#leftTeam", () => {
+				if (prevText && teamName[1]) {
+					if (sideSwitch) {
+						fadeIn("#leftTeam");
+					}
+				} else if (!prevText && teamName[1]) {
+
+					if (sideSwitch) {
+						fadeOut("#leftWrapper", () => {
+							fadeIn("#leftTeam");
+						});
+					}
+					leftInt = setInterval(() => {
+						switchTexts("left");
+					}, sideTimer);
+
+					if (teamName[2]) {
+						clearInterval(rightInt);
+						rightInt = setInterval(() => {
+							switchTexts("right");
+						}, sideTimer);
+					}
+
+				} else if (prevText && !teamName[1]) {
+					clearInterval(leftInt);
+					fadeIn("#leftWrapper");
+				}
+				updateText('leftTeam', teamName[1], nameSize);
+			});
+		};
 
 		//player 1's character icon change
 		if (p1CharacterPrev != player[1].character) {
 			//fade out the image while also moving it because that always looks cool
 			fadeOutMove("#p1Character", -pCharMove, async () => {
 				//now that nobody can see it, lets change the image!
-				await updateChar(player[1].character, 'p1Character'); //will return scale
-				//and now, fade it in
-				fadeInChara("#p1Character");
+				const charScale = await updateChar(player[1].character, 'p1Character'); //will return scale				//and now, fade it in
+				fadeInChara("#p1Character", charScale);
 			});
 			p1CharacterPrev = player[1].character;
+		}
+		//same with the other players when in teams
+		if (p3CharacterPrev != player[3].character) {
+			fadeOutMove("#p3Character", -pCharMove, async () => {
+				const charScale = await updateChar(player[3].character, 'p3Character'); //will return scale				//and now, fade it in
+				fadeInChara("#p3Character", charScale);
+			});
+			p3CharacterPrev = player[3].character;
+		}
+		if (p5CharacterPrev != player[5].character) {
+			fadeOutMove("#p5Character", -pCharMove, async () => {
+				const charScale = await updateChar(player[5].character, 'p3Character'); //will return scale				//and now, fade it in
+				fadeInChara("#p5Character", charScale);
+			});
+			p5CharacterPrev = player[5].character;
 		}
 
 		//the [W] and [L] status for grand finals
@@ -239,27 +409,77 @@ async function getData(scInfo) {
 		}
 
 		//score check
-		if (p1ScorePrev != score[1]) {
+		if (leftScorePrev != score[1]) {
 			updateScore('scoreL', score[1], bestOf, "L");
-			p1ScorePrev = score[1];
+			leftScorePrev = score[1];
 		}
 
 
 		//did you pay attention earlier? Well, this is the same as player 1!
 		if (document.getElementById('p2Name').textContent != player[2].name ||
-			document.getElementById('p2Team').textContent != player[2].tag){
-			fadeOutMove("#p2Wrapper", pMove, () => {
-				updatePlayerName('p2Wrapper', 'p2Name', 'p2Team', player[2].name, player[2].tag);
-				fadeInMove("#p2Wrapper");
+			document.getElementById('p2Tag').textContent != player[2].tag){
+			fadeOut("#rightWrapper", () => {
+				updatePlayerTexts(player, "right", "R");
+				if (!sideSwitch || !teamName[2]) {
+					fadeIn("#rightWrapper", .2);
+				}
 			});
 		}
 
+		//team check
+		if (document.getElementById('rightTeam').textContent != teamName[2] && gamemode != 1) {
+			const prevText = document.getElementById("rightTeam").textContent;
+			fadeOut("#rightTeam", () => {
+				if (prevText && teamName[2]) {
+					if (sideSwitch) {
+						fadeIn("#rightTeam");
+					}
+				} else if (!prevText && teamName[2]) {
+
+					if (sideSwitch) {
+						fadeOut("#rightWrapper", () => {
+							fadeIn("#rightTeam");
+						});
+					}
+					rightInt = setInterval(() => {
+						switchTexts("right");
+					}, sideTimer);
+
+					if (teamName[1]) {
+						clearInterval(rightInt);
+						rightInt = setInterval(() => {
+							switchTexts("right");
+						}, sideTimer);
+					}
+
+				} else if (prevText && !teamName[2]) {
+					clearInterval(rightInt);
+					fadeIn("#rightWrapper");
+				}
+				updateText('rightTeam', teamName[2], nameSize);
+			});
+		};
+
 		if (p2CharacterPrev != player[2].character) {
 			fadeOutMove("#p2Character", -pCharMove, async () => {
-				await updateChar(player[2].character, 'p2Character'); //will return scale
-				fadeInChara("#p2Character");
+				const charScale = await updateChar(player[2].character, 'p2Character');
+				fadeInChara("#p2Character", charScale);
 			});
 			p2CharacterPrev = player[2].character;
+		}
+		if (p4CharacterPrev != player[4].character) {
+			fadeOutMove("#p4Character", -pCharMove, async () => {
+				const charScale = await updateChar(player[4].character, 'p4Character');
+				fadeInChara("#p4Character", charScale);
+			});
+			p4CharacterPrev = player[4].character;
+		}
+		if (p6CharacterPrev != player[6].character) {
+			fadeOutMove("#p6Character", -pCharMove, async () => {
+				const charScale = await updateChar(player[6].character, 'p6Character');
+				fadeInChara("#p6Character", charScale);
+			});
+			p6CharacterPrev = player[6].character;
 		}
 
 		if (p2wlPrev != wl[2]) {
@@ -273,9 +493,9 @@ async function getData(scInfo) {
 			p2wlPrev = wl[2];
 		}
 
-		if (p2ScorePrev != score[2]) {
+		if (rightScorePrev != score[2]) {
 			updateScore('scoreR', score[2], bestOf, "R");
-			p2ScorePrev = score[2];
+			rightScorePrev = score[2];
 		}
 
 
@@ -291,17 +511,17 @@ async function getData(scInfo) {
 		if (document.getElementById('round').textContent != round){
 			if (round) { //if theres actual text
 				if (document.getElementById("overlayRound").style.opacity == 0) {
-					updateRound(round);
+					updateText("round", round, roundSize);
 					fadeIn("#overlayRound")
 				} else {
 					fadeOut("#round", () => {
-						updateRound(round);
+						updateText("round", round, roundSize);
 						fadeIn("#round");
 					});	
 				}
 			} else { //if no text, hide everything
 				fadeOut("#overlayRound");
-				updateRound(round);
+				updateText("round", round, roundSize);
 			}
 
 		}
@@ -313,6 +533,7 @@ async function getData(scInfo) {
 function showNothing(itemEL) {
 	itemEL.setAttribute('src', 'Resources/Literally Nothing.png');
 }
+
 
 //score change
 function updateScore(scoreID, pScore, bestOf, side) {
@@ -338,23 +559,51 @@ function updateScore(scoreID, pScore, bestOf, side) {
 	if (startup) {scoreEL.addEventListener("error", () => {showNothing(scoreEL)})}
 }
 
-//player text change
-function updatePlayerName(wrapperID, nameID, teamID, pName, pTeam) {
-	const nameEL = document.getElementById(nameID);
-	nameEL.style.fontSize = '36px'; //set original text size
-	nameEL.textContent = pName; //change the actual text
-	const teamEL = document.getElementById(teamID);
-	teamEL.style.fontSize = '25px';
-	teamEL.textContent = pTeam;
-	resizeText(document.getElementById(wrapperID)); //resize if it overflows
+
+//set on an interval, to change the main side's texts
+function switchTexts(side) {
+	if (sideSwitch) {
+		fadeOut("#"+side+"Team", () => {
+			fadeIn("#"+side+"Wrapper");
+		});
+	} else {
+		fadeOut("#"+side+"Wrapper", () => {
+			fadeIn("#"+side+"Team");
+		});
+	}
 }
 
-//round change
-function updateRound(round) {
-	const roundEL = document.getElementById('round');
-	roundEL.style.fontSize = '30px'; //set original text size
-	roundEL.textContent = round; //change the actual text
-	resizeText(roundEL); //resize it if it overflows
+//updates the 3 player texts of a side at once
+function updatePlayerTexts(player, side, s) {
+	let i = side == "left" ? 1 : 2;
+	for (i; i < 7; i+=2) {
+		//update the actual texts
+		updatePlayerName('p'+i+'Name', 'p'+i+'Tag', player[i].name, player[i].tag);
+	}
+	//set the initial size for the slashes so they get resized later
+	document.getElementById("slash"+s+"1").style.fontSize = nameSize;
+	document.getElementById("slash"+s+"2").style.fontSize = nameSize;
+	//resize texts if they overflows, wont affect texts that are not displayed
+	resizeText(document.getElementById(side+'Wrapper'));
+}
+
+//player text change
+function updatePlayerName(nameID, tagID, pName, pTag) {
+	const nameEL = document.getElementById(nameID);
+	nameEL.style.fontSize = nameSize; //set original text size
+	nameEL.textContent = pName; //change the actual text
+	const tagEL = document.getElementById(tagID);
+	tagEL.style.fontSize = tagSize;
+	tagEL.textContent = pTag;
+}
+
+
+//generic text changer
+function updateText(textID, textToType, maxSize) {
+	const textEL = document.getElementById(textID);
+	textEL.style.fontSize = maxSize; //set original text size
+	textEL.textContent = textToType; //change the actual text
+	resizeText(textEL); //resize it if it overflows
 }
 
 //fade out
@@ -378,15 +627,18 @@ function fadeInMove(itemID) {
 }
 
 //fade in but for the character image
-function fadeInChara(itemID) {
-	gsap.to(itemID, {delay: .2, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
+function fadeInChara(itemID, charScale) {
+	gsap.fromTo(itemID,
+		{scale: charScale}, //set scale keyframe so it doesnt scale while transitioning
+		{delay: .2, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime}
+	);
 }
 
 //fade in for the characters when first loading
-function initCharaFade(charaID) {
+function initCharaFade(charaID, move, timeDelay = introDelay) {
 	gsap.fromTo(charaID,
-		{x: -pCharMove, opacity: 0},
-		{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
+		{x: move, opacity: 0},
+		{delay: timeDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
 }
 
 //check if winning or losing in a GF, then change image
@@ -411,7 +663,7 @@ function updateWL(pWL, side) {
 function resizeText(textEL) {
 	const childrens = textEL.children;
 	while (textEL.scrollWidth > textEL.offsetWidth || textEL.scrollHeight > textEL.offsetHeight) {
-		if (childrens.length > 0) { //for team+player texts
+		if (childrens.length > 0) { //for tag+player texts
 			Array.from(childrens).forEach(function (child) {
 				child.style.fontSize = getFontSize(child);
 			});
@@ -495,4 +747,6 @@ async function updateChar(pCharacter, charID) {
 	charEL.style.left = charPos[0] + "px";
 	charEL.style.top = charPos[1] + "px";
 	charEL.style.transform = "scale(" + charPos[2] + ")";
+
+	return charPos[2]; //we need this one to set scale keyframe when fading back
 }

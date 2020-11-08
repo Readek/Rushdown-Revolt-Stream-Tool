@@ -131,42 +131,7 @@ async function getData(scInfo) {
 		}
 
 		//finally out of the intro, lets check the gamemode and show whats needed
-		if (gamemode == 2) {
-			const doubles = document.getElementsByClassName("doubles");
-			Array.from(doubles).forEach(el => {
-				el.style.display = "inline";
-			});
-
-			document.getElementById("nameBGL").setAttribute('src', "Resources/Overlay/Scoreboard/Name BG Duo.png");
-			document.getElementById("nameBGL").style.left = "301px";
-			document.getElementById("leftWrapper").style.left = "360px";
-			document.getElementById("leftTeam").style.left = "360px";
-			document.getElementById("leftWrapper").style.width = "340px";
-			document.getElementById("leftTeam").style.width = "340px";
-
-			document.getElementById("nameBGR").setAttribute('src', "Resources/Overlay/Scoreboard/Name BG Duo.png");
-			document.getElementById("nameBGR").style.right = "299px";
-			document.getElementById("rightWrapper").style.right = "358px";
-			document.getElementById("rightTeam").style.right = "358px";
-			document.getElementById("rightWrapper").style.width = "340px";
-			document.getElementById("rightTeam").style.width = "340px";
-
-
-			document.getElementById("charP1").style.top = "57px";
-			document.getElementById("charP1").style.left = "-17px";
-			document.getElementById("charP2").style.top = "57px";
-			document.getElementById("charP2").style.right = "119px";
-
-			document.getElementById("wlL").style.left = "-275px";
-			document.getElementById("wlR").style.right = "-275px";
-
-		} else if (gamemode == 3) {
-			const trios = document.getElementsByClassName("trios");
-			Array.from(trios).forEach(el => {
-				el.style.display = "inline";
-			});
-
-		}
+		gamemodeStart(gamemode);
 		//update player names and tags
 		updatePlayerTexts(player, "left", "L");
 		//we will also update the team name
@@ -200,15 +165,22 @@ async function getData(scInfo) {
 		//when the image finishes loading, fade-in-move the character to the overlay
 		if (gamemode == 1) {
 			initCharaFade("#charP1", -pCharMove*2, introDelay);
-		} else {
+		} else if (gamemode == 2) {
 			initCharaFade("#charP1", -pCharMove*2, introDelay+.3);
+		} else {
+			initCharaFade("#charP1", -pCharMove*2, introDelay+.6);
 		}
 		//do the same for the other characters if doubles or trios
 		if (gamemode == 2 || gamemode == 3) {
 			await updateChar(player[3].character, 'p3Character');
-			initCharaFade("#charP3", -pCharMove*2, introDelay);
+			if (gamemode == 2) {
+				initCharaFade("#charP3", -pCharMove*2, introDelay);
+			} else {
+				initCharaFade("#charP3", -pCharMove*2, introDelay+.3);
+			}
 			if (gamemode == 3) {
-				/*  */
+				await updateChar(player[5].character, 'p5Character');
+				initCharaFade("#charP5", -pCharMove*2, introDelay);
 			}
 		}
 
@@ -263,7 +235,8 @@ async function getData(scInfo) {
 			await updateChar(player[4].character, 'p4Character');
 			initCharaFade("#charP4", pCharMove*2, introDelay + .3);
 			if (gamemode == 3) {
-				/*  */
+				await updateChar(player[6].character, 'p6Character');
+				initCharaFade("#charP6", pCharMove*2, introDelay+.6);
 			}
 		}
 		p2CharacterPrev = player[2].character;
@@ -525,6 +498,81 @@ async function getData(scInfo) {
 			}
 
 		}
+	}
+}
+
+
+//how about some ugly code to show and position stuff if 2v2 or 3v3?
+function gamemodeStart(gamemode) {
+	if (gamemode == 2) {
+		const doubles = document.getElementsByClassName("doubles");
+		Array.from(doubles).forEach(el => {
+			el.style.display = "inline";
+		});
+
+		document.getElementById("nameBGL").setAttribute('src', "Resources/Overlay/Scoreboard/Name BG Duo.png");
+		document.getElementById("nameBGL").style.left = "301px";
+		document.getElementById("leftWrapper").style.left = "360px";
+		document.getElementById("leftTeam").style.left = "360px";
+		document.getElementById("leftWrapper").style.width = "340px";
+		document.getElementById("leftTeam").style.width = "340px";
+
+		document.getElementById("nameBGR").setAttribute('src', "Resources/Overlay/Scoreboard/Name BG Duo.png");
+		document.getElementById("nameBGR").style.right = "299px";
+		document.getElementById("rightWrapper").style.right = "358px";
+		document.getElementById("rightTeam").style.right = "358px";
+		document.getElementById("rightWrapper").style.width = "340px";
+		document.getElementById("rightTeam").style.width = "340px";
+
+
+		document.getElementById("charP1").style.top = "57px";
+		document.getElementById("charP1").style.left = "-17px";
+		document.getElementById("charP2").style.top = "57px";
+		document.getElementById("charP2").style.right = "119px";
+
+		document.getElementById("wlL").style.left = "-275px";
+		document.getElementById("wlR").style.right = "-275px";
+
+	} else if (gamemode == 3) {
+		const trios = document.getElementsByClassName("trios");
+		Array.from(trios).forEach(el => {
+			el.style.display = "inline";
+		});
+
+		document.getElementById("nameBGL").setAttribute('src', "Resources/Overlay/Scoreboard/Name BG Trio.png");
+		document.getElementById("nameBGL").style.left = "335px";
+		document.getElementById("nameBGL").style.top = "61px";
+		document.getElementById("leftWrapper").style.left = "398px";
+		document.getElementById("leftWrapper").style.top = "59px";
+		document.getElementById("leftWrapper").style.width = "420px";
+		document.getElementById("leftTeam").style.left = "398px";
+		document.getElementById("leftTeam").style.top = "59px";
+		document.getElementById("leftTeam").style.width = "420px";
+
+		document.getElementById("nameBGR").setAttribute('src', "Resources/Overlay/Scoreboard/Name BG Trio.png");
+		document.getElementById("nameBGR").style.right = "333px";
+		document.getElementById("nameBGR").style.top = "61px";
+		document.getElementById("rightWrapper").style.right = "398px";
+		document.getElementById("rightWrapper").style.top = "59px";
+		document.getElementById("rightWrapper").style.width = "420px";
+		document.getElementById("rightTeam").style.right = "398px";
+		document.getElementById("rightTeam").style.top = "59px";
+		document.getElementById("rightTeam").style.width = "420px";
+
+
+		document.getElementById("charP1").style.left = "-278px";
+		document.getElementById("charP3").style.left = "-139px";
+		document.getElementById("charP3").style.top = "0px";
+		
+		document.getElementById("charP4").style.right = "-141px";
+		document.getElementById("charP4").style.top = "0px";
+
+
+		document.getElementById("wlL").style.left = "-27px";
+		document.getElementById("wlL").style.top = "56px";
+		document.getElementById("wlR").style.right = "-29px";
+		document.getElementById("wlR").style.top = "56px";
+
 	}
 }
 

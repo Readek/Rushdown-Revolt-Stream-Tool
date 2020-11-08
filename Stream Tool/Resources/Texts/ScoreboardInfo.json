@@ -44,12 +44,12 @@
   ],
   "wl": [
     null,
-    "Nada",
-    "Nada"
+    "W",
+    "L"
   ],
-  "gamemode": 2,
+  "gamemode": 3,
   "bestOf": "Bo5",
-  "round": "Winners Finals",
+  "round": "Grand Finals",
   "tournamentName": "A Tournament 123",
   "caster": [
     {},

@@ -218,7 +218,7 @@ async function getData(scInfo) {
 		
 
 		//set the current score
-		updateScore('scoreL', score[1], bestOf, "L");
+		updateScore('scoreL', score[1], bestOf, "L", false);
 		//fade the score image in with the rest of the overlay
 		fadeIn("#scoreL", introDelay);
 		leftScorePrev = score[1];
@@ -270,7 +270,7 @@ async function getData(scInfo) {
 		p2wlPrev = wl[2];
 
 
-		updateScore('scoreR', score[2], bestOf, "R");
+		updateScore('scoreR', score[2], bestOf, "R", false);
 		fadeIn("#scoreR", introDelay);
 		rightScorePrev = score[2];
 
@@ -362,7 +362,7 @@ async function getData(scInfo) {
 				//now that nobody can see it, lets change the image!
 				const charScale = await updateChar(player[1].character, 'p1Character'); //will return scale
 				//and now, fade it in
-				initCharaFade("#p1Character", charScale);
+				fadeInChara("#p1Character", charScale);
 			});
 			p1CharacterPrev = player[1].character;
 		}
@@ -399,7 +399,7 @@ async function getData(scInfo) {
 
 		//score check
 		if (leftScorePrev != score[1]) {
-			updateScore('scoreL', score[1], bestOf, "L");
+			updateScore('scoreL', score[1], bestOf, "L", true);
 			leftScorePrev = score[1];
 		}
 
@@ -482,15 +482,15 @@ async function getData(scInfo) {
 		}
 
 		if (rightScorePrev != score[2]) {
-			updateScore('scoreR', score[2], bestOf, "R");
+			updateScore('scoreR', score[2], bestOf, "R", true);
 			rightScorePrev = score[2];
 		}
 
 
 		//if the "bestOf" status changed, update the score ticks
 		if (bestOfPrev != bestOf) {
-			updateScore('scoreL', score[1], bestOf, "L");
-			updateScore('scoreR', score[2], bestOf, "R");
+			updateScore('scoreL', score[1], bestOf, "L", false);
+			updateScore('scoreR', score[2], bestOf, "R", false);
 			bestOfPrev = bestOf;
 		}
 
@@ -619,25 +619,22 @@ function showNothing(itemEL) {
 
 
 //score change
-function updateScore(scoreID, pScore, bestOf, side) {
+function updateScore(scoreID, pScore, bestOf, side, playAnim) {
 	let delay = 0;
-	/* if (playAnim) { //do we want to play the score up animation?
-		//depending on the "bestOf" and the color, change the clip
-		const scoreUpEL = document.getElementById(scoreUpID);
-		scoreUpEL.setAttribute('src', 'Resources/Overlay/Score/Scoreboard/ScoreUp ' + bestOf + '.webm');
+	if (playAnim) { //do we want to play the score up animation?
+		//depending on the side, change the clip
+		const scoreUpEL = document.getElementById("scoreUp" + side);
+		scoreUpEL.setAttribute('src', 'Resources/Overlay/Scoreboard/Score/ScoreUp ' + side + '.webm');
 		scoreUpEL.play();
-		delay = 200; //add a bit of delay so the score change fits with the vid
-	} */
+	}
 	const scoreEL = document.getElementById(scoreID);
 	//set timeout to the actual image change so it fits with the animation (if it played)
-	setTimeout(() => {
 		//change the image depending on the bestOf status and, of course, the current score
 		if (pScore == 0) {
 			scoreEL.setAttribute('src', 'Resources/Overlay/Scoreboard/Score/' + bestOf + ' ' + pScore + '.png')
 		} else {
 			scoreEL.setAttribute('src', 'Resources/Overlay/Scoreboard/Score/' + bestOf + ' ' + pScore + ' ' + side + '.png')
 		}
-	}, delay);
 
 	if (startup) {scoreEL.addEventListener("error", () => {showNothing(scoreEL)})}
 }

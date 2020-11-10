@@ -29,19 +29,32 @@ let leftInt, rightInt;
 let sideSwitch = true; //true = teams, false = players
 const sideTimer = 10000;
 
+//to run some code just once
 let startup = true;
 
+//set some elements here so code is easier later
+const leftWrapper = document.getElementById("leftWrapper");
+const rightWrapper = document.getElementById("rightWrapper");
+const leftTeam = document.getElementById("leftTeam");
+const rightTeam = document.getElementById("rightTeam");
+const roundEL = document.getElementById('round');
+const tournamentEL = document.getElementById('tournament');
 
-window.onload = init;
-function init() {
-	async function mainLoop() {
-		const scInfo = await getInfo();
-		getData(scInfo);
-	}
+const caster1N = document.getElementById('caster1');
+const caster1Tr = document.getElementById('twitter1');
+const caster1Th = document.getElementById('twitch1');
+const caster2N = document.getElementById('caster2');
+const caster2Tr = document.getElementById('twitter2');
+const caster2Th = document.getElementById('twitch2');
 
-	mainLoop();
-	setInterval( () => { mainLoop() }, 500); //update interval
+
+/* script begin */
+async function mainLoop() {
+	const scInfo = await getInfo();
+	getData(scInfo);
 }
+mainLoop();
+setInterval( () => { mainLoop() }, 500); //update interval
 
 	
 async function getData(scInfo) {
@@ -64,85 +77,46 @@ async function getData(scInfo) {
 	if (startup) {
 
 		//first, check the gamemode and show whats needed
-		if (gamemode == 2) {
-			const doubles = document.getElementsByClassName("doubles");
-			Array.from(doubles).forEach(el => {
-				el.style.display = "inline";
-			});
-
-			document.getElementById("charImgP1").style.left = "-140px";
-			document.getElementById("charP1").style.clip = "rect(0px,480px,1080px,0px)";
-			document.getElementById("charImgP3").style.left = "340px";
-			document.getElementById("charP3").style.clip = "rect(0px,1060px,1080px,480px)";
-
-			document.getElementById("charImgP2").style.right = "340px";
-			document.getElementById("charP2").style.clip = "rect(0px,-480px,1080px,-1060px)";
-			document.getElementById("charImgP4").style.right = "-140px";
-			document.getElementById("charP4").style.clip = "rect(0px,0px,1080px,-480px)";
-
-			document.getElementById("separator").setAttribute('src', "Resources/Overlay/VS Screen/Duos Separators.png")
-		} else if (gamemode == 3) {
-			const trios = document.getElementsByClassName("trios");
-			Array.from(trios).forEach(el => {
-				el.style.display = "inline";
-			});
-
-			document.getElementById("charImgP1").style.left = "-380px";
-			document.getElementById("charP1").style.clip = "rect(0px,326px,1080px,0px)";
-			document.getElementById("charImgP3").style.left = "-50px";
-			document.getElementById("charP3").style.clip = "rect(0px,652px,1080px,326px)";
-			document.getElementById("charImgP5").style.left = "270px";
-			document.getElementById("charP5").style.clip = "rect(0px,1060px,1080px,652px)";
-
-			document.getElementById("charImgP2").style.right = "270px";
-			document.getElementById("charP2").style.clip = "rect(0px,-652px,1080px,-1060px)";
-			document.getElementById("charImgP4").style.right = "-50px";
-			document.getElementById("charP4").style.clip = "rect(0px,-326px,1080px,-652px)";
-			document.getElementById("charImgP6").style.right = "-380px";
-			document.getElementById("charP6").style.clip = "rect(0px,0px,1080px,-326px)";
-
-			document.getElementById("separator").setAttribute('src', "Resources/Overlay/VS Screen/Trios Separators.png")
-		}
+		gamemodeStart(gamemode);
 		
 
 		//left side texts
 		updatePlayerTexts(player, "left", "L");
 		//we will also update the team name
 		updateText('leftTeam', teamName[1], playerSize);
-		document.getElementById("leftTeam").style.webkitTextStrokeWidth = strokeCalc(teamName[1].length) + "px";
+		leftTeam.style.webkitTextStrokeWidth = strokeCalc(teamName[1].length) + "px";
 
 		//if singles, just show the player texts
 		if (gamemode == 1) {
-			fadeIn("#leftWrapper", introDelay+.25);
+			fadeIn(leftWrapper, introDelay+.25);
 		} else {
 			//if the team name exists
 			if (teamName[1]) {
-				fadeIn("#leftTeam", introDelay+.25); //show team name
+				fadeIn(leftTeam, introDelay+.25); //show team name
 				//keep changing team name and player names
 				leftInt = setInterval(() => {
 					switchTexts("left");
 				}, sideTimer);
 			} else { //if no team name, just show player texts
-				fadeIn("#leftWrapper", introDelay+.25);
+				fadeIn(leftWrapper, introDelay+.25);
 			}
 		}
-
 
 		//same for player 2
 		updatePlayerTexts(player, "right", "R");
 		updateText('rightTeam', teamName[2], playerSize);
-		document.getElementById("rightTeam").style.webkitTextStrokeWidth = strokeCalc(teamName[2].length) + "px";
+		rightTeam.style.webkitTextStrokeWidth = strokeCalc(teamName[2].length) + "px";
 
 		if (gamemode == 1) {
-			fadeIn("#rightWrapper", introDelay+.25);
+			fadeIn(rightWrapper, introDelay+.25);
 		} else {
 			if (teamName[2]) {
-				fadeIn("#rightTeam", introDelay+.25);
+				fadeIn(rightTeam, introDelay+.25);
 				rightInt = setInterval(() => {
 					switchTexts("right");
 				}, sideTimer);
 			} else {
-				fadeIn("#rightWrapper", introDelay+.25);
+				fadeIn(rightWrapper, introDelay+.25);
 			}
 		}
 
@@ -272,19 +246,14 @@ async function getData(scInfo) {
 	else {
 
 		//player 1 name change
-		if (document.getElementById('p1Name').textContent != player[1].name ||
-			document.getElementById('p1Tag').textContent != player[1].tag ||
-			document.getElementById('p3Name').textContent != player[3].name ||
-			document.getElementById('p3Tag').textContent != player[3].tag ||
-			document.getElementById('p5Name').textContent != player[5].name ||
-			document.getElementById('p5Tag').textContent != player[5].tag) { //well this is ugly
+		if (checkPTexts(player, "left")) {
 			//fade out player 1 text
-			fadeOut("#leftWrapper", () => {
+			fadeOut(leftWrapper, () => {
 				//now that nobody is seeing it, change the text content!
 				updatePlayerTexts(player, "left", "L");
 				//and fade the name back in
 				if (!sideSwitch || !teamName[1]) {
-					fadeIn("#leftWrapper", .2);
+					fadeIn(leftWrapper, .2);
 				}
 			});
 
@@ -297,16 +266,11 @@ async function getData(scInfo) {
 		}
 
 		//same for player 2
-		if (document.getElementById('p2Name').textContent != player[2].name ||
-			document.getElementById('p2Tag').textContent != player[2].tag ||
-			document.getElementById('p4Name').textContent != player[4].name ||
-			document.getElementById('p4Tag').textContent != player[4].tag ||
-			document.getElementById('p6Name').textContent != player[6].name ||
-			document.getElementById('p6Tag').textContent != player[6].tag){
-			fadeOut("#rightWrapper", () => {
+		if (checkPTexts(player, "right")){
+			fadeOut(rightWrapper, () => {
 				updatePlayerTexts(player, "right", "R");
 				if (!sideSwitch || !teamName[2]) {
-					fadeIn("#rightWrapper", .2);
+					fadeIn(rightWrapper, .2);
 				}
 			});
 
@@ -319,18 +283,18 @@ async function getData(scInfo) {
 
 
 		//team check
-		if (document.getElementById('leftTeam').textContent != teamName[1] && gamemode != 1) {
-			const prevText = document.getElementById("leftTeam").textContent;
-			fadeOut("#leftTeam", () => {
+		if (leftTeam.textContent != teamName[1] && gamemode != 1) {
+			const prevText = leftTeam.textContent;
+			fadeOut(leftTeam, () => {
 				if (prevText && teamName[1]) {
 					if (sideSwitch) {
-						fadeIn("#leftTeam");
+						fadeIn(leftTeam);
 					}
 				} else if (!prevText && teamName[1]) {
 
 					if (sideSwitch) {
-						fadeOut("#leftWrapper", () => {
-							fadeIn("#leftTeam");
+						fadeOut(leftWrapper, () => {
+							fadeIn(leftTeam);
 						});
 					}
 					leftInt = setInterval(() => {
@@ -346,24 +310,24 @@ async function getData(scInfo) {
 
 				} else if (prevText && !teamName[1]) {
 					clearInterval(leftInt);
-					fadeIn("#leftWrapper");
+					fadeIn(leftWrapper);
 				}
 				updateText('leftTeam', teamName[1], playerSize);
 			});
 		};
 
-		if (document.getElementById('rightTeam').textContent != teamName[2] && gamemode != 1) {
-			const prevText = document.getElementById("rightTeam").textContent;
-			fadeOut("#rightTeam", () => {
+		if (rightTeam.textContent != teamName[2] && gamemode != 1) {
+			const prevText = rightTeam.textContent;
+			fadeOut(rightTeam, () => {
 				if (prevText && teamName[2]) {
 					if (sideSwitch) {
-						fadeIn("#rightTeam");
+						fadeIn(rightTeam);
 					}
 				} else if (!prevText && teamName[2]) {
 
 					if (sideSwitch) {
-						fadeOut("#rightWrapper", () => {
-							fadeIn("#rightTeam");
+						fadeOut(rightWrapper, () => {
+							fadeIn(rightTeam);
 						});
 					}
 
@@ -380,7 +344,7 @@ async function getData(scInfo) {
 
 				} else if (prevText && !teamName[2]) {
 					clearInterval(rightInt);
-					fadeIn("#rightWrapper");
+					fadeIn(rightWrapper);
 				}
 				updateText('rightTeam', teamName[2], playerSize);
 			});
@@ -494,10 +458,10 @@ async function getData(scInfo) {
 
 
 		//update round text
-		if (document.getElementById('round').textContent != round){
-			fadeOut("#round", () => {
+		if (roundEL.textContent != round){
+			fadeOut(roundEL, () => {
 				updateText("round", round, roundSize);
-				fadeIn("#round", .2);
+				fadeIn(roundEL, .2);
 			});
 
 			//hide the background if no text is found
@@ -509,10 +473,10 @@ async function getData(scInfo) {
 		}
 
 		//update tournament text
-		if (document.getElementById('tournament').textContent != tournamentName){
-			fadeOut("#tournament", () => {
+		if (tournamentEL.textContent != tournamentName){
+			fadeOut(tournamentEL, () => {
 				updateText("tournament", tournamentName, tournamentSize);
-				fadeIn("#tournament", .2);
+				fadeIn(tournamentEL, .2);
 			});
 
 			if (round || tournamentName) {
@@ -524,10 +488,10 @@ async function getData(scInfo) {
 
 
 		//update caster 1 info
-		if (document.getElementById('caster1').textContent != caster[1].name){
-			fadeOut("#caster1", () => {
+		if (caster1N.textContent != caster[1].name){
+			fadeOut(caster1N, () => {
 				updateText("caster1", caster[1].name, casterSize);
-				fadeIn("#caster1", .2);
+				fadeIn(caster1N, .2);
 			});
 			//hide the background if no caster names
 			if (caster[1].name || caster[2].name) {
@@ -537,21 +501,21 @@ async function getData(scInfo) {
 			}
 		}
 		//caster 1's twitter
-		if (document.getElementById('twitter1').textContent != caster[1].twitter){
+		if (caster1Tr.textContent != caster[1].twitter){
 			twitter1 = caster[1].twitter;
 			updateSocial(caster[1].twitter, "twitter1", "twitter1Wrapper", twitch1, "twitch1Wrapper");
 		}
 		//caster 2's twitch (same as above)
-		if (document.getElementById('twitch1').textContent != caster[1].twitch){
+		if (caster1Th.textContent != caster[1].twitch){
 			twitch1 = caster[1].twitch;
 			updateSocial(caster[1].twitch, "twitch1", "twitch1Wrapper", caster[1].twitter, "twitter1Wrapper");
 		}
 
 		//caster 2, same as above
-		if (document.getElementById('caster2').textContent != caster[2].name){
-			fadeOut("#caster2", () => {
+		if (caster2N.textContent != caster[2].name){
+			fadeOut(caster2N, () => {
 				updateText("caster2", caster[2].name, casterSize);
-				fadeIn("#caster2", .2);
+				fadeIn(caster2N, .2);
 			});
 			if (caster[1].name || caster[2].name) {
 				fadeIn("#casterInfo");
@@ -559,15 +523,59 @@ async function getData(scInfo) {
 				fadeOut("#casterInfo");
 			}
 		}
-		if (document.getElementById('twitter2').textContent != caster[2].twitter){
+		if (caster2Tr.textContent != caster[2].twitter){
 			twitter2 = caster[2].twitter;
 			updateSocial(caster[2].twitter, "twitter2", "twitter2Wrapper", twitch2, "twitch2Wrapper");
 		}
 
-		if (document.getElementById('twitch2').textContent != caster[2].twitch){
+		if (caster2Th.textContent != caster[2].twitch){
 			twitch2 = caster[2].twitch;
 			updateSocial(caster[2].twitch, "twitch2", "twitch2Wrapper", caster[2].twitter, "twitter2Wrapper");
 		}
+	}
+}
+
+
+//sets the starting position and opacity of stuff
+function gamemodeStart(gamemode) {
+	if (gamemode == 2) {
+		const doubles = document.getElementsByClassName("doubles");
+		Array.from(doubles).forEach(el => {
+			el.style.display = "inline";
+		});
+
+		document.getElementById("charImgP1").style.left = "-140px";
+		document.getElementById("charP1").style.clip = "rect(0px,480px,1080px,0px)";
+		document.getElementById("charImgP3").style.left = "340px";
+		document.getElementById("charP3").style.clip = "rect(0px,1060px,1080px,480px)";
+
+		document.getElementById("charImgP2").style.right = "340px";
+		document.getElementById("charP2").style.clip = "rect(0px,-480px,1080px,-1060px)";
+		document.getElementById("charImgP4").style.right = "-140px";
+		document.getElementById("charP4").style.clip = "rect(0px,0px,1080px,-480px)";
+
+		document.getElementById("separator").setAttribute('src', "Resources/Overlay/VS Screen/Duos Separators.png")
+	} else if (gamemode == 3) {
+		const trios = document.getElementsByClassName("trios");
+		Array.from(trios).forEach(el => {
+			el.style.display = "inline";
+		});
+
+		document.getElementById("charImgP1").style.left = "-380px";
+		document.getElementById("charP1").style.clip = "rect(0px,326px,1080px,0px)";
+		document.getElementById("charImgP3").style.left = "-50px";
+		document.getElementById("charP3").style.clip = "rect(0px,652px,1080px,326px)";
+		document.getElementById("charImgP5").style.left = "270px";
+		document.getElementById("charP5").style.clip = "rect(0px,1060px,1080px,652px)";
+
+		document.getElementById("charImgP2").style.right = "270px";
+		document.getElementById("charP2").style.clip = "rect(0px,-652px,1080px,-1060px)";
+		document.getElementById("charImgP4").style.right = "-50px";
+		document.getElementById("charP4").style.clip = "rect(0px,-326px,1080px,-652px)";
+		document.getElementById("charImgP6").style.right = "-380px";
+		document.getElementById("charP6").style.clip = "rect(0px,0px,1080px,-326px)";
+
+		document.getElementById("separator").setAttribute('src', "Resources/Overlay/VS Screen/Trios Separators.png")
 	}
 }
 
@@ -686,6 +694,19 @@ function updateSocial(mainSocial, mainText, mainWrapper, otherSocial, otherWrapp
 	});
 }
 
+
+//checks if any of the player texts has been changed
+function checkPTexts(player, side) {
+	let i = side == "left" ? 1 : 2;
+	for (i; i < 7; i+=2) {
+		if (document.getElementById('p'+i+'Name').textContent != player[i].name ||
+		  document.getElementById('p'+i+'Tag').textContent != player[i].tag) {
+			return true;
+		}
+	}
+	return false;
+}
+
 //player text change
 function updatePlayerName(nameID, tagID, pName, pTag) {
 	const nameEL = document.getElementById(nameID);
@@ -766,6 +787,7 @@ function strokeCalc(num) {
 		return 4;
 	}
 }
+
 
 //fade out
 function fadeOut(itemID, funct = () => {}, dur = fadeOutTime) {

@@ -1,7 +1,7 @@
 const fs = require('fs');
-/* const { get } = require('http'); */
 const path = require('path');
 
+//path variables used when developing
 const mainPath = path.resolve(__dirname, '..', '..', 'Stream Tool', 'Resources', 'Texts');
 const charPath = path.resolve(__dirname, '..', '..', 'Stream Tool', 'Resources', 'Characters');
 
@@ -99,9 +99,6 @@ function init() {
     document.getElementById('p2CharImg').addEventListener("error", () => {
         document.getElementById('p2CharImg').setAttribute('src', charPath + '/' + 'Random.png');
     });
-    //set the initial images
-    document.getElementById('p1CharImg').setAttribute('src', charPath + '/' + 'Random.png');
-    document.getElementById('p2CharImg').setAttribute('src', charPath + '/' + 'Random.png');
 
 
     //score tick listeners, to automatically check/uncheck the other ticks
@@ -156,6 +153,10 @@ function init() {
     document.getElementById('swapButton').addEventListener("click", swap);
     //add a listener to the clear button
     document.getElementById('clearButton').addEventListener("click", clearPlayers);
+
+
+    //quick trick to set all character variables to "Random", updating their images
+    clearPlayers();
 
 
     /* SETTINGS */

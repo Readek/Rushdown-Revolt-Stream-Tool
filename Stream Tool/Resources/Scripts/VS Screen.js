@@ -365,7 +365,7 @@ async function getData(scInfo) {
 			if (gamemode == 1) {
 				fadeOut("#bgImgL", () => {
 					updateBG(player[1].character, 'bgImgL');
-					fadeIn("#bgImgL")
+					bgFadeIn("#bgImgL")
 				});
 			}
 
@@ -381,9 +381,9 @@ async function getData(scInfo) {
 			});
 
 			if (gamemode == 1) {
-				fadeOut("#bgImgL", () => {
-					updateBG(player[1].character, 'bgImgL');
-					fadeIn("#bgImgL")
+				fadeOut("#bgImgR", () => {
+					updateBG(player[2].character, 'bgImgR');
+					bgFadeIn("#bgImgR")
 				});
 			}
 		
@@ -799,9 +799,14 @@ function fadeIn(itemID, timeDelay, dur = fadeInTime) {
 	gsap.to(itemID, {delay: timeDelay, opacity: 1, duration: dur});
 }
 
+//fade in but for backgrounds
+function bgFadeIn(itemID, timeDelay, dur = fadeInTime) {
+	gsap.to(itemID, {delay: timeDelay, opacity: .5, duration: dur});
+}
+
 //fade out for the characters
 function charaFadeOut(itemID, funct) {
-	gsap.to(itemID, {delay: .2, opacity: 0, ease: "power1.in", duration: fadeOutTime, onComplete: funct});
+	gsap.to(itemID, {opacity: 0, ease: "power1.in", duration: fadeOutTime, onComplete: funct});
 }
 
 //fade in characters edition

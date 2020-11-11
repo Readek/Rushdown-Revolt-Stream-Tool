@@ -620,7 +620,6 @@ function showNothing(itemEL) {
 
 //score change
 function updateScore(scoreID, pScore, bestOf, side, playAnim) {
-	let delay = 0;
 	if (playAnim) { //do we want to play the score up animation?
 		//depending on the side, change the clip
 		const scoreUpEL = document.getElementById("scoreUp" + side);
@@ -628,13 +627,12 @@ function updateScore(scoreID, pScore, bestOf, side, playAnim) {
 		scoreUpEL.play();
 	}
 	const scoreEL = document.getElementById(scoreID);
-	//set timeout to the actual image change so it fits with the animation (if it played)
-		//change the image depending on the bestOf status and, of course, the current score
-		if (pScore == 0) {
-			scoreEL.setAttribute('src', 'Resources/Overlay/Scoreboard/Score/' + bestOf + ' ' + pScore + '.png')
-		} else {
-			scoreEL.setAttribute('src', 'Resources/Overlay/Scoreboard/Score/' + bestOf + ' ' + pScore + ' ' + side + '.png')
-		}
+	//change the image depending on the bestOf status and, of course, the current score
+	if (pScore == 0) {
+		scoreEL.setAttribute('src', 'Resources/Overlay/Scoreboard/Score/' + bestOf + ' ' + pScore + '.png')
+	} else {
+		scoreEL.setAttribute('src', 'Resources/Overlay/Scoreboard/Score/' + bestOf + ' ' + pScore + ' ' + side + '.png')
+	}
 
 	if (startup) {scoreEL.addEventListener("error", () => {showNothing(scoreEL)})}
 }

@@ -793,19 +793,19 @@ async function updateChar(pCharacter, charID) {
 
 	//if the image fails to load, we will put a placeholder
 	if (startup) {charEL.addEventListener("error", () => {
-		charEL.setAttribute('src', 'Resources/Characters/Portrait/Random.png');
+		charEL.setAttribute('src', 'Resources/Characters/Random/Icon.png');
 	})}
 
 	//change the image path depending on the character and skin
 	if (pCharacter == "Random") {
 		const pNum = charID.substring(1, 2);
 		if (pNum % 2 == 0) {
-			charEL.setAttribute('src', 'Resources/Characters/Portrait/Random 2.png');
+			charEL.setAttribute('src', 'Resources/Characters/Random/Icon Flip.png');
 		} else {
-			charEL.setAttribute('src', 'Resources/Characters/Portrait/Random.png');
+			charEL.setAttribute('src', 'Resources/Characters/Random/Icon.png');
 		}
 	} else {
-		charEL.setAttribute('src', 'Resources/Characters/Portrait/' + pCharacter + '.png');
+		charEL.setAttribute('src', 'Resources/Characters/' + pCharacter + '/Portrait.png');
 	}
 
 

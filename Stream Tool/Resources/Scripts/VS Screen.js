@@ -909,7 +909,7 @@ function updateChar(pCharacter, charID) {
 	}
 
 	//change the image path depending on the character and skin
-	charEL.setAttribute('src', 'Resources/Characters/Poster/' + pCharacter + '.png');
+	charEL.setAttribute('src', 'Resources/Characters/' + pCharacter + '/Poster.png');
 }
 
 //background change, same as above
@@ -920,5 +920,5 @@ function updateBG(pCharacter, bgID) {
 			showNothing(bgEL);
 		});
 	}
-	bgEL.setAttribute('src', 'Resources/Backgrounds/' + pCharacter + '.jpg');
+	bgEL.setAttribute('src', 'Resources/Characters/' + pCharacter + '/BG.jpg');
 }

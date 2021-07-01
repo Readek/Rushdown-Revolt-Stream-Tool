@@ -79,7 +79,7 @@ function init() {
     const charSelectors = document.getElementsByClassName("charSelector");
     for (let i = 0; i < charSelectors.length; i++) {
         //set the default image
-        charSelectors[i].firstElementChild.firstElementChild.setAttribute('src', charPath + '/Random.png');
+        charSelectors[i].firstElementChild.firstElementChild.setAttribute('src', charPath + '/Random/Icon.png');
         //position the images
         positionChar("Random", charSelectors[i].firstElementChild.firstElementChild);
         //if clicking them, show the character roster
@@ -94,10 +94,10 @@ function init() {
 
     //check whenever an image isnt found so we replace it with a "?"
     document.getElementById('p1CharImg').addEventListener("error", () => {
-        document.getElementById('p1CharImg').setAttribute('src', charPath + '/' + 'Random.png');
+        document.getElementById('p1CharImg').setAttribute('src', charPath + '/' + 'Random/Icon.png');
     });
     document.getElementById('p2CharImg').addEventListener("error", () => {
-        document.getElementById('p2CharImg').setAttribute('src', charPath + '/' + 'Random.png');
+        document.getElementById('p2CharImg').setAttribute('src', charPath + '/' + 'Random/Icon.png');
     });
 
 
@@ -310,7 +310,7 @@ function createCharRoster() {
         //create the actual image
         const newImg = document.createElement('img');
         newImg.className = "charRosterImg";
-        newImg.setAttribute('src', charPath + '/Portrait/'+guiSettings.characters[i]+'.png');
+        newImg.setAttribute('src', charPath + '/' +guiSettings.characters[i]+ '/Portrait.png');
         newDiv.appendChild(newImg);
 
         //add in some sexy text with the name of the character
@@ -338,7 +338,7 @@ function changeCharacter() {
     activeChar.style.setProperty("--char", character); //will be read when updating the scoreboard
 
     //change of the char selector image
-    selectorImg.setAttribute('src', charPath + '/Portrait/'+character+'.png');
+    selectorImg.setAttribute('src', charPath + '/' + character + '/Portrait.png');
     positionChar(character, selectorImg);
 
     //change of the character image in the background
@@ -351,7 +351,7 @@ function changeCharacter() {
 //change the image path depending on the character, only when in singles mode
 function charImgChange(charImg, charName) {
     if (gamemode == 1) {
-        charImg.setAttribute('src', charPath + '/Full/' + charName + '.png');
+        charImg.setAttribute('src', charPath + '/' + charName + '/Full.png');
     }
 }
 
@@ -573,7 +573,7 @@ function checkPlayerPreset() {
                     //actual image
                     const charImg = document.createElement('img');
                     charImg.className = "pfCharImg";
-                    charImg.setAttribute('src', charPath+'/Portrait/'+char.character+'.png');
+                    charImg.setAttribute('src', charPath + '/' + char.character + '/Portrait.png');
                     //we have to position it
                     positionChar(char.character, charImg);
                     //and add it to the mask
@@ -627,7 +627,7 @@ function positionChar(character, charEL) {
     
     //if the image fails to load, use a placeholder
 	charEL.addEventListener("error", () => {
-        charEL.setAttribute('src', charPath + '/Random.png');
+        charEL.setAttribute('src', charPath + '/Random/Icon.png');
         charEL.style.left = "28px";
         charEL.style.top = "0px";
         charEL.style.transform = "scale(1.4)";
@@ -657,7 +657,7 @@ function playerPreset() {
     pCharEL.parentElement.parentElement.style.setProperty("--char", character);
 
     //change of the char selector image
-    pCharEL.setAttribute('src', charPath + '/Portrait/'+character+'.png');
+    pCharEL.setAttribute('src', charPath + '/' + character + '/Portrait.png');
     positionChar(character, pCharEL);
 
     //change of the character image in the background
@@ -897,7 +897,7 @@ function swap() {
         //the value read when updating the scoreboard
         ele1.style.setProperty("--char", ele2.style.getPropertyValue("--char"));
         //change of the char selector image
-        ele1.firstElementChild.firstElementChild.setAttribute('src', charPath + '/Portrait/'+ele2.style.getPropertyValue("--char")+'.png');
+        ele1.firstElementChild.firstElementChild.setAttribute('src', charPath + '/' + ele2.style.getPropertyValue("--char") + '/Portrait.png');
         positionChar(ele2.style.getPropertyValue("--char"), ele1.firstElementChild.firstElementChild);
         //change of the character image in the background
         if (i == 1) {
@@ -906,7 +906,7 @@ function swap() {
 
         //repeat for the second one
         ele2.style.setProperty("--char", store);
-        ele2.firstElementChild.firstElementChild.setAttribute('src', charPath + '/Portrait/'+store+'.png');
+        ele2.firstElementChild.firstElementChild.setAttribute('src', charPath + '/' + store + '/Portrait.png');
         positionChar(store, ele2.firstElementChild.firstElementChild);
         if (i == 1) {
             charImgChange(document.getElementById('p2CharImg'), store);
@@ -964,7 +964,7 @@ function clearPlayers() {
         charSel.style.setProperty("--char", "Random");
 
         //change of the char selector image
-        charSel.firstElementChild.firstElementChild.setAttribute('src', charPath + '/Portrait/Random.png');
+        charSel.firstElementChild.firstElementChild.setAttribute('src', charPath + '/Random/Icon.png');
         positionChar("Random", charSel.firstElementChild.firstElementChild);
 
         //change of the character image in the background

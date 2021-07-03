@@ -1,3 +1,5 @@
+'use strict';
+
 //animation stuff
 const pMove = 50; //distance to move for the player names (pixels)
 const pCharMove = 20; //distance to move for the character icons
@@ -775,7 +777,7 @@ function getCharInfo(pCharacter) {
 		const oReq = new XMLHttpRequest();
 		oReq.addEventListener("load", reqListener);
 		oReq.onerror = () => {resolve("notFound")}; //for obs local file browser sources
-		oReq.open("GET", 'Resources/Texts/Character Info/' + pCharacter + '.json');
+		oReq.open("GET", 'Resources/Characters/' + pCharacter + '/_Info.json');
 		oReq.send();
 
 		function reqListener () {

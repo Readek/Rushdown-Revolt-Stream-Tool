@@ -93,6 +93,12 @@ input[type="text"] {
   width: 49%;
   position: relative;
 }
+#player1 {
+  background-image: linear-gradient(to bottom left, #F3E67D50, #00000000, #00000000);
+}
+#player2 {
+  background-image: linear-gradient(to bottom left, #ECACFF50, #00000000, #00000000);
+}
 
 .pEditor {
   position: absolute;

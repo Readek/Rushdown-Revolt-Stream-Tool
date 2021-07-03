@@ -1,3 +1,5 @@
+'use strict';
+
 const fs = require('fs');
 const path = require('path');
 
@@ -69,10 +71,6 @@ function init() {
 
     
     /* OVERLAY */
-
-    //load background colors
-    loadColors(1);
-    loadColors(2);
 
 
     //set initial values for the character selectors
@@ -261,10 +259,17 @@ function isPresetOpen() {
 }
 
 
-//called whenever we need to read a json file
-function getJson(fileName) {
+function getCharJson(char) {
     try {
-        const settingsRaw = fs.readFileSync(mainPath + "/" + fileName + ".json");
+        const settingsRaw = fs.readFileSync(charPath + "/" + char + "/_Info.json");
+        return JSON.parse(settingsRaw);
+    } catch (error) {
+        return undefined;
+    }
+}
+function getPInfoJson(player) {
+    try {
+        const settingsRaw = fs.readFileSync(mainPath + "/Player Info/" + player + ".json");
         return JSON.parse(settingsRaw);
     } catch (error) {
         return undefined;
@@ -292,31 +297,41 @@ function hideChars() {
 }
 
 function createCharRoster() {
-    //checks the character list which we use to order stuff
-    const guiSettings = getJson("InterfaceInfo");
+    // check the names of the folders inside "Characters" (except for 'Random')
+    const characterList = fs.readdirSync(charPath).filter((name) => {
+        if (name != "Random") {
+            return true;
+        }
+    });
+    // add random at the end to make our lives easier later
+    characterList.push("Random")
 
     //this separates top/bot rows by half of the list
-    let row1 = guiSettings.characters.length / 2;
+    let row1 = characterList.length / 2;
     row1 = Math.ceil(row1); //if not even, round up
 
     //for each character on the list
-    for (let i = 0; i < guiSettings.characters.length; i++) {
+    for (let i = 0; i < characterList.length; i++) {
         //create the container with the image and text
         const newDiv = document.createElement("div");
         newDiv.className = "rosterEntry";
-        newDiv.id = guiSettings.characters[i]; //we will read this value later
+        newDiv.id = characterList[i]; //we will read this value later
         newDiv.addEventListener("click", changeCharacter); //do this if clicked
 
         //create the actual image
         const newImg = document.createElement('img');
         newImg.className = "charRosterImg";
-        newImg.setAttribute('src', charPath + '/' +guiSettings.characters[i]+ '/Portrait.png');
+        if (i == characterList.length - 1) {
+            newImg.setAttribute('src', charPath + '/Random/Icon.png');
+        } else {
+            newImg.setAttribute('src', charPath + '/' +characterList[i]+ '/Portrait.png');
+        }
         newDiv.appendChild(newImg);
 
         //add in some sexy text with the name of the character
         const newText = document.createElement("div");
         newText.className = "textRoster";
-        newText.innerHTML = guiSettings.characters[i];
+        newText.innerHTML = characterList[i];
         newDiv.appendChild(newText);
 
         //does it go top row or bottom row?
@@ -352,19 +367,6 @@ function changeCharacter() {
 function charImgChange(charImg, charName) {
     if (gamemode == 1) {
         charImg.setAttribute('src', charPath + '/' + charName + '/Full.png');
-    }
-}
-
-
-//this used to be a longer function lol
-function loadColors(pNum) {
-    const colorList = getJson("InterfaceInfo"); //check the color list
-
-    //set the colors for the interface (the first color for p1, and the second for p2)
-    if (pNum == 1) {
-        document.getElementById("player1").style.backgroundImage = "linear-gradient(to bottom left, "+colorList.colorSlots[0].hex+"50, #00000000, #00000000)";
-    } else {
-        document.getElementById("player2").style.backgroundImage = "linear-gradient(to bottom left, "+colorList.colorSlots[1].hex+"50, #00000000, #00000000)";
     }
 }
 
@@ -529,7 +531,7 @@ function checkPlayerPreset() {
                 pFinderEL.style.display = "block";
 
                 //go inside that file to get the player info
-                const playerInfo = getJson("Player Info/" + file);
+                const playerInfo = getPInfoJson(file);
                 //for each character that player plays
                 playerInfo.characters.forEach(char => {
 
@@ -605,7 +607,7 @@ function checkPlayerPreset() {
 function positionChar(character, charEL) {
 
     //get the character positions
-    const charInfo = getJson("Character Info/" + character);
+    const charInfo = getCharJson(character);
 	
 	//             x, y, scale
 	let charPos = [0, 0, 1];
@@ -1101,6 +1103,9 @@ function writeScoreboard() {
     fs.writeFileSync(mainPath + "/Simple Texts/Player 2.txt", document.getElementById('pName4').value);
     fs.writeFileSync(mainPath + "/Simple Texts/Player 1.txt", document.getElementById('pName5').value);
     fs.writeFileSync(mainPath + "/Simple Texts/Player 2.txt", document.getElementById('pName6').value);
+
+    fs.writeFileSync(textPath + "/Simple Texts/Score L.txt", checkScore(p1Win1, p1Win2, p1Win3));
+    fs.writeFileSync(textPath + "/Simple Texts/Score R.txt", checkScore(p2Win1, p2Win2, p2Win3));
 
     fs.writeFileSync(mainPath + "/Simple Texts/Round.txt", roundInp.value);
     fs.writeFileSync(mainPath + "/Simple Texts/Tournament Name.txt", document.getElementById('tournamentName').value);

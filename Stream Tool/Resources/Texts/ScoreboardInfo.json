@@ -2,66 +2,66 @@
   "player": [
     {},
     {
-      "name": "Player 1",
-      "tag": "Tag 1",
-      "character": "Seth"
-    },
-    {
-      "name": "Player 2",
+      "name": "Hola",
       "tag": "",
-      "character": "Ezzie"
-    },
-    {
-      "name": "Player 3",
-      "tag": "Tag 3",
       "character": "Raymer"
     },
     {
-      "name": "Player 4",
-      "tag": "Tag 4",
-      "character": "Urdah"
+      "name": "Tal",
+      "tag": "que",
+      "character": "Seth"
     },
     {
-      "name": "Player 5",
-      "tag": "Tag 5",
-      "character": "Zhurong"
+      "name": "",
+      "tag": "",
+      "character": "Random"
     },
     {
-      "name": "Player 6",
-      "tag": "Tag 6",
-      "character": "Kidd"
+      "name": "",
+      "tag": "",
+      "character": "Random"
+    },
+    {
+      "name": "",
+      "tag": "",
+      "character": "Random"
+    },
+    {
+      "name": "",
+      "tag": "",
+      "character": "Random"
     }
   ],
   "teamName": [
     null,
-    "Team 1 Name",
-    "Team 2 Name"
+    "",
+    ""
   ],
   "score": [
     null,
-    1,
-    2
+    0,
+    0
   ],
   "wl": [
     null,
-    "W",
-    "L"
+    "Nada",
+    "Nada"
   ],
   "gamemode": 1,
   "bestOf": "Bo5",
-  "round": "Grand Finals",
-  "tournamentName": "A Tournament 123",
+  "round": "Winners Finals",
+  "tournamentName": "FPS #4",
   "caster": [
     {},
     {
-      "name": "Caster 1",
-      "twitter": "Twitter 1",
-      "twitch": "Twitch 1"
+      "name": "",
+      "twitter": "",
+      "twitch": ""
     },
     {
-      "name": "Caster 2",
-      "twitter": "Twitter 2",
-      "twitch": "Twitch 2"
+      "name": "",
+      "twitter": "",
+      "twitch": ""
     }
   ],
   "allowIntro": false

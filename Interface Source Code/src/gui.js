@@ -161,6 +161,7 @@ function init() {
 
     //set listeners for the settings checkboxes
     forceWL.addEventListener("click", forceWLtoggles);
+    document.getElementById("copyMatch").addEventListener("click", copyMatch);
 
 
     /* KEYBOARD SHORTCUTS */
@@ -324,7 +325,7 @@ function createCharRoster() {
         if (i == characterList.length - 1) {
             newImg.setAttribute('src', charPath + '/Random/Icon.png');
         } else {
-            newImg.setAttribute('src', charPath + '/' +characterList[i]+ '/Portrait.png');
+            newImg.setAttribute('src', charPath + '/' +characterList[i]+ '/CharSel.png');
         }
         newDiv.appendChild(newImg);
 
@@ -366,7 +367,7 @@ function changeCharacter() {
 //change the image path depending on the character, only when in singles mode
 function charImgChange(charImg, charName) {
     if (gamemode == 1) {
-        charImg.setAttribute('src', charPath + '/' + charName + '/Full.png');
+        charImg.setAttribute('src', charPath + '/' + charName + '/Portrait.png');
     }
 }
 
@@ -629,7 +630,7 @@ function positionChar(character, charEL) {
     
     //if the image fails to load, use a placeholder
 	charEL.addEventListener("error", () => {
-        charEL.setAttribute('src', charPath + '/Random/Icon.png');
+        charEL.setAttribute('src', charPath + '/Random/Icon Flip.png');
         charEL.style.left = "28px";
         charEL.style.top = "0px";
         charEL.style.transform = "scale(1.4)";
@@ -1018,6 +1019,32 @@ function forceWLtoggles() {
 }
 
 
+//will copy the current match info to the clipboard
+// Format: "Tournament Name - Round - Player1 (Character1) VS Player2 (Character2)"
+function copyMatch() {
+
+    //initialize the string
+    let copiedText = document.getElementById('tournamentName').value + " - " + roundInp.value + " - ";
+
+    if (gamemode == 1) { //for singles matches
+        //check if the player has a tag to add
+        if (document.getElementById('pTag1').value) {
+            copiedText += document.getElementById('pTag1').value + " | ";
+        }
+        copiedText += document.getElementById('pName1').value + " (" + document.getElementById('charSelectorP1').style.getPropertyValue("--char") + ") VS ";
+        if (document.getElementById('pTag2').value) {
+            copiedText += document.getElementById('pTag2').value + " | ";
+        }
+        copiedText += document.getElementById('pName2').value + " (" + document.getElementById('charSelectorP2').style.getPropertyValue("--char") + ")";
+    } else { //for team matches
+        copiedText += document.getElementById("teamName1").value + " VS " + document.getElementById("teamName2").value;
+    }
+
+    //send the string to the user's clipboard
+    navigator.clipboard.writeText(copiedText);
+}
+
+
 //time to write it down
 function writeScoreboard() {
 
@@ -1099,10 +1126,10 @@ function writeScoreboard() {
     //simple .txt files
     fs.writeFileSync(mainPath + "/Simple Texts/Player 1.txt", document.getElementById('pName1').value);
     fs.writeFileSync(mainPath + "/Simple Texts/Player 2.txt", document.getElementById('pName2').value);
-    fs.writeFileSync(mainPath + "/Simple Texts/Player 1.txt", document.getElementById('pName3').value);
-    fs.writeFileSync(mainPath + "/Simple Texts/Player 2.txt", document.getElementById('pName4').value);
-    fs.writeFileSync(mainPath + "/Simple Texts/Player 1.txt", document.getElementById('pName5').value);
-    fs.writeFileSync(mainPath + "/Simple Texts/Player 2.txt", document.getElementById('pName6').value);
+    fs.writeFileSync(mainPath + "/Simple Texts/Player 3.txt", document.getElementById('pName3').value);
+    fs.writeFileSync(mainPath + "/Simple Texts/Player 4.txt", document.getElementById('pName4').value);
+    fs.writeFileSync(mainPath + "/Simple Texts/Player 5.txt", document.getElementById('pName5').value);
+    fs.writeFileSync(mainPath + "/Simple Texts/Player 6.txt", document.getElementById('pName6').value);
 
     fs.writeFileSync(textPath + "/Simple Texts/Score L.txt", checkScore(p1Win1, p1Win2, p1Win3));
     fs.writeFileSync(textPath + "/Simple Texts/Score R.txt", checkScore(p2Win1, p2Win2, p2Win3));

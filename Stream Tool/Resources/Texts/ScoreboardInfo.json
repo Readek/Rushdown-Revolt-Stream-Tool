@@ -2,14 +2,14 @@
   "player": [
     {},
     {
-      "name": "Hola",
+      "name": "Player 1",
       "tag": "",
-      "character": "Raymer"
+      "character": "Seth"
     },
     {
-      "name": "Tal",
-      "tag": "que",
-      "character": "Seth"
+      "name": "Player 2",
+      "tag": "Tag",
+      "character": "Ezzie"
     },
     {
       "name": "",
@@ -39,8 +39,8 @@
   ],
   "score": [
     null,
-    0,
-    0
+    1,
+    2
   ],
   "wl": [
     null,
@@ -49,19 +49,19 @@
   ],
   "gamemode": 1,
   "bestOf": "Bo5",
-  "round": "Winners Finals",
-  "tournamentName": "FPS #4",
+  "round": "Losers Finals",
+  "tournamentName": "A Tournament #123",
   "caster": [
     {},
     {
-      "name": "",
-      "twitter": "",
-      "twitch": ""
+      "name": "Caster 1",
+      "twitter": "Twitter 1",
+      "twitch": "Twitch 1"
     },
     {
-      "name": "",
-      "twitter": "",
-      "twitch": ""
+      "name": "Caster 2",
+      "twitter": "Twitter 2",
+      "twitch": "Twitch 2"
     }
   ],
   "allowIntro": false

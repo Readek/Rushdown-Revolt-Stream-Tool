@@ -1131,8 +1131,8 @@ function writeScoreboard() {
     fs.writeFileSync(mainPath + "/Simple Texts/Player 5.txt", document.getElementById('pName5').value);
     fs.writeFileSync(mainPath + "/Simple Texts/Player 6.txt", document.getElementById('pName6').value);
 
-    fs.writeFileSync(textPath + "/Simple Texts/Score L.txt", checkScore(p1Win1, p1Win2, p1Win3));
-    fs.writeFileSync(textPath + "/Simple Texts/Score R.txt", checkScore(p2Win1, p2Win2, p2Win3));
+    fs.writeFileSync(mainPath + "/Simple Texts/Score L.txt", checkScore(p1Win1, p1Win2, p1Win3));
+    fs.writeFileSync(mainPath + "/Simple Texts/Score R.txt", checkScore(p2Win1, p2Win2, p2Win3));
 
     fs.writeFileSync(mainPath + "/Simple Texts/Round.txt", roundInp.value);
     fs.writeFileSync(mainPath + "/Simple Texts/Tournament Name.txt", document.getElementById('tournamentName').value);

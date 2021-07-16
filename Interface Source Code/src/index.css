@@ -94,10 +94,10 @@ input[type="text"] {
   position: relative;
 }
 #player1 {
-  background-image: linear-gradient(to bottom left, #F3E67D50, #00000000, #00000000);
+  background-image: linear-gradient(to bottom left, #F9D33C50, #00000000, #00000000);
 }
 #player2 {
-  background-image: linear-gradient(to bottom left, #ECACFF50, #00000000, #00000000);
+  background-image: linear-gradient(to bottom left, #5D67D850, #00000000, #00000000);
 }
 
 .pEditor {

@@ -55,6 +55,18 @@ const gmIcon3 = document.getElementById("gmIcon3");
 
 const forceWL = document.getElementById('forceWLToggle');
 
+const slidersH = document.getElementsByClassName("sliderH");
+const slidersS = document.getElementsByClassName("sliderS");
+const slidersV = document.getElementsByClassName("sliderV");
+
+const recChecks = document.getElementsByClassName("recCheck");
+const recList = document.getElementById("recList");
+const recRadioF = document.getElementById("recRadioF");
+const recRadioP = document.getElementById("recRadioP");
+
+const defaultCode = "D48587-XXXXXX-C22B65-B0523A-6E3073-804987";
+
+
 
 window.onload = init;
 function init() {
@@ -162,6 +174,7 @@ function init() {
     //set listeners for the settings checkboxes
     forceWL.addEventListener("click", forceWLtoggles);
     document.getElementById("copyMatch").addEventListener("click", copyMatch);
+    document.getElementById("goToRecolor").addEventListener("click", toRecolors);
 
 
     /* KEYBOARD SHORTCUTS */
@@ -298,12 +311,10 @@ function hideChars() {
 }
 
 function createCharRoster() {
-    // check the names of the folders inside "Characters" (except for 'Random')
-    const characterList = fs.readdirSync(charPath).filter((name) => {
-        if (name != "Random") {
-            return true;
-        }
-    });
+
+    // get the character list
+    const characterList = getCharList();
+    
     // add random at the end to make our lives easier later
     characterList.push("Random")
 
@@ -342,6 +353,16 @@ function createCharRoster() {
             document.getElementById("rosterLine2").appendChild(newDiv);
         }
     }
+}
+
+// check the names of the folders inside "Characters" (except for 'Random')
+function getCharList() {
+    const characterList = fs.readdirSync(charPath).filter((name) => {
+        if (name != "Random") {
+            return true;
+        }
+    });
+    return characterList;
 }
 
 //called whenever clicking an image in the character roster
@@ -472,7 +493,7 @@ function deactivateWL() {
     currentP1WL = "Nada";
     currentP2WL = "Nada";
 
-    pWLs = document.getElementsByClassName("wlBox");
+    const pWLs = document.getElementsByClassName("wlBox");
     for (let i = 0; i < pWLs.length; i++) {
         pWLs[i].style.color = "var(--text2)";
         pWLs[i].style.backgroundImage = "var(--bg4)";
@@ -1144,5 +1165,416 @@ function writeScoreboard() {
     fs.writeFileSync(mainPath + "/Simple Texts/Caster 2 Name.txt", document.getElementById('cName2').value);
     fs.writeFileSync(mainPath + "/Simple Texts/Caster 2 Twitter.txt", document.getElementById('cTwitter2').value);
     fs.writeFileSync(mainPath + "/Simple Texts/Caster 2 Twitch.txt", document.getElementById('cTwitch2').value);
+
+}
+
+
+/* time to talk about recolors */
+
+// to move the viewport to the recolors section
+function toRecolors() {
+
+    // hide normal settings
+    document.getElementById("actualSettings").style.display = "none";
+    // show recolor controls
+    document.getElementById("recolorSettings").style.display = "inherit";
+    // change settings title
+    document.getElementById("settingsTitle").innerText = "RECOLOR SETTINGS";
+
+    viewport.style.right = "200%";
+}
+
+// to go back to the settings view
+document.getElementById("backToSettings").addEventListener("click", () => {
+    document.getElementById("actualSettings").style.display = "inherit";
+    document.getElementById("recolorSettings").style.display = "none";
+    document.getElementById("settingsTitle").innerText = "SETTINGS";
+
+    viewport.style.right = "140%";
+});
+
+// h/s/v buttons will just show their sliders and hide the rest
+document.getElementById("hueButt").addEventListener("click", () => {
+    Array.from(slidersH).forEach(el => {el.style.display = "inherit"});
+    Array.from(slidersS).forEach(el => {el.style.display = "none"});
+    Array.from(slidersV).forEach(el => {el.style.display = "none"});
+    document.getElementById("hueButt").style.background = "var(--bg2)";
+    document.getElementById("satButt").style.background = "var(--bg5)";
+    document.getElementById("valButt").style.background = "var(--bg5)";
+})
+document.getElementById("satButt").addEventListener("click", () => {
+    Array.from(slidersH).forEach(el => {el.style.display = "none"});
+    Array.from(slidersS).forEach(el => {el.style.display = "inherit"});
+    Array.from(slidersV).forEach(el => {el.style.display = "none"});
+    document.getElementById("hueButt").style.background = "var(--bg5)";
+    document.getElementById("satButt").style.background = "var(--bg2)";
+    document.getElementById("valButt").style.background = "var(--bg5)";
+})
+document.getElementById("valButt").addEventListener("click", () => {
+    Array.from(slidersH).forEach(el => {el.style.display = "none"});
+    Array.from(slidersS).forEach(el => {el.style.display = "none"});
+    Array.from(slidersV).forEach(el => {el.style.display = "inherit"});
+    document.getElementById("hueButt").style.background = "var(--bg5)";
+    document.getElementById("satButt").style.background = "var(--bg5)";
+    document.getElementById("valButt").style.background = "var(--bg2)";
+})
+
+
+// setup the shader
+const recCan = document.getElementById("recolorImg");
+let recSha = new RRecolor([212, 133, 135, 1], [100, 100, 100, 1]);
+recSha.addImage(recCan, mainPath + "/../Overlay/VS Screen/VS Lightning RecBase.png").then(
+    () => {recSha.recolor()}
+);
+
+
+let currentCode = defaultCode; // todo read from file
+
+// to enable/disable sliders
+for (let i = 0; i < recChecks.length; i++) {
+    recChecks[i].addEventListener("click", () => {disEnSliders(i)})
+}
+function disEnSliders(num) {
+
+    const isDisabled = !recChecks[num].checked;
+
+    slidersH[num].disabled = isDisabled;
+    slidersS[num].disabled = isDisabled;
+    slidersV[num].disabled = isDisabled;
+    if (num == 2) {
+        for (let i = 0; i < 3; i++) {
+            slidersH[i+3].disabled = isDisabled;
+            slidersS[i+3].disabled = isDisabled;
+            slidersV[i+3].disabled = isDisabled;
+        }
+    }
+
+}
+
+// use the stored code to set the initial values
+decodeCode(currentCode);
+
+// set the initial color for the S and V sliders
+for (let i = 0; i < slidersH.length; i++) {
+    colorSliders(i);    
+}
+
+// defaults button, just restores everything
+document.getElementById("defaultRecolor").addEventListener("click", () => {
+    decodeCode(defaultCode);
+    if (recList.selectedIndex == 0) {
+        sliderMoved(0);
+    } else if (recList.selectedIndex == 1) {
+        sliderMoved(1);
+    } else {
+        sliderMoved(2);
+    }
+    for (let i = 0; i < slidersH.length; i++) {
+        colorSliders(i);    
+    }
+})
+
+
+for (let i = 0; i < slidersH.length; i++) {
+    slidersH[i].oninput = () => {sliderMoved(i)};
+    slidersS[i].oninput = () => {sliderMoved(i)}; 
+    slidersV[i].oninput = () => {sliderMoved(i)}; 
+}
+
+function sliderMoved(num) {
+
+    const rgbFromHsv = getSliderValueRgb(num)
+
+    if (recList.selectedIndex >= 2) {
+        
+        if (num >= 2) {
+            const finalRgb = [];
+
+            for (let i = 0; i < 4; i++) {
+                const slidValues = getSliderValueRgb(i+2);
+                finalRgb.push(slidValues[0], slidValues[1], slidValues[2], 1);
+            }
+
+            recSha.recolor(finalRgb);
+        }
+
+    } else {
+        if (num == recList.selectedIndex) {
+            recSha.recolor([rgbFromHsv[0], rgbFromHsv[1], rgbFromHsv[2], 1]);
+        }
+    }
+
+    colorSliders(num);
+
+}
+
+function getSliderValueRgb(num) {
+    const rgbFromHsv = hsv2rgb(
+        slidersH[num].value / 360,
+        slidersS[num].value / 100,
+        slidersV[num].value / 100
+    );
+    rgbFromHsv[0] = Math.round(rgbFromHsv[0] * 255);
+    rgbFromHsv[1] = Math.round(rgbFromHsv[1] * 255);
+    rgbFromHsv[2] = Math.round(rgbFromHsv[2] * 255);
+
+    return rgbFromHsv;
+}
+
+function colorSliders(num) {
+    const cssRgb = hsv2rgb(slidersH[num].value / 360, 1, 1);
+    cssRgb[0] = cssRgb[0] * 255;
+    cssRgb[1] = cssRgb[1] * 255;
+    cssRgb[2] = cssRgb[2] * 255;
+    slidersS[num].style.background = "linear-gradient(to right, white, rgb(" + cssRgb[0] + ", " + cssRgb[1] + ", " + cssRgb[2] + ")";
+    slidersV[num].style.background = "linear-gradient(to right, black, rgb(" + cssRgb[0] + ", " + cssRgb[1] + ", " + cssRgb[2] + ")";
+}
+
+
+// Add new entries for each character
+const characterList = getCharList();
+for (let i = 0; i < characterList.length; i++) {
+    const option = document.createElement('option'); //create new entry
+    option.text = characterList[i]; //set the text of entry
+    recList.add(option); //add the entry to the combo list
+}
+
+recList.addEventListener("change", recCharChange);
+function recCharChange() {
+
+    if (this.selectedIndex < 2) {
+
+        // disable the radio buttons
+        recRadioF.disabled = true;
+        recRadioP.disabled = true;
+        
+        if (this.selectedIndex == 0) { // VS Screen
+            const rgbFromHsv = getSliderValueRgb(0);
+            recSha = new RRecolor([212, 133, 135, 1], [100, 100, 100, 1]);
+            recSha.addImage(recCan, mainPath + "/../Overlay/VS Screen/VS Lightning RecBase.png").then(
+                () => {recSha.recolor([rgbFromHsv[0], rgbFromHsv[1], rgbFromHsv[2], 1])}
+            );
+        } else { // SC
+            
+        }
+        
+    } else {
+        newCharImg();
+        // enable the radio buttons
+        recRadioF.disabled = false;
+        recRadioP.disabled = false;
+    }
+
+}
+
+function newCharImg() {
+    const charName = recList.selectedOptions[0].text;
+    const finalRgb = [];
+    const charInfo = getCharJson(charName);
+
+    for (let i = 0; i < 4; i++) {
+        const slidValues = getSliderValueRgb(i+2);            
+        finalRgb.push(slidValues[0], slidValues[1], slidValues[2], 1)          
+    }
+
+    if (recRadioP.checked) {
+        recSha = new RRecolor(charInfo.recolor.poster.oc, charInfo.recolor.poster.cr);
+        recSha.addImage(recCan, charPath + "/" + charName + "/Poster RecBase.png").then(
+            () => {recSha.recolor(finalRgb)}
+        );
+    } else {
+        recSha = new RRecolor(charInfo.recolor.full.oc, charInfo.recolor.full.cr);
+        recSha.addImage(recCan, charPath + "/" + charName + "/Full RecBase.png").then(
+            () => {recSha.recolor(finalRgb)}
+        );
+    }
+}
+
+// when radio buttons are clicked, swap the render (if we have a char selected)
+recRadioF.addEventListener("click", () => {if (recList.selectedIndex >= 2) {newCharImg()}});
+recRadioP.addEventListener("click", () => {if (recList.selectedIndex >= 2) {newCharImg()}});
+
+
+// save images
+document.getElementById("saveRecolor").addEventListener("click", () => {
+
+    recSaveVS();
+    recSaveChars();    
+    
+})
+function recSaveVS() {
+
+    if (recChecks[0].checked) { // if we got stuff to recolor
+        
+        const rgbFromHsv = getSliderValueRgb(0);   
+        const vsShader = new RRecolor([212, 133, 135, 1], [100, 100, 100, 1]);
+        const vsCanv = document.createElement("canvas");
+        vsShader.addImage(vsCanv, mainPath + "/../Overlay/VS Screen/VS Lightning RecBase.png").then(
+            () => {
+                const buff = vsShader.download([rgbFromHsv[0], rgbFromHsv[1], rgbFromHsv[2], 1])
+                fs.writeFileSync(mainPath + "/../Overlay/VS Screen/VS Lightning.png", buff);
+            }
+        );
+
+    } else { // if no recolors, overwrite the image with the original
+        const buff = fs.readFileSync(mainPath + "/../Overlay/VS Screen/VS Lightning Original.png");
+        fs.writeFileSync(mainPath + "/../Overlay/VS Screen/VS Lightning.png", buff);
+    }
+}
+function recSaveChars() {
+    if (recChecks[2].checked) {
+
+        for (let i = 0; i < characterList.length; i++) {
+            
+            try {
+
+                const charName = characterList[i];
+                const finalRgb = [];
+                const charInfo = getCharJson(charName);
+
+                for (let i = 0; i < 4; i++) {
+                    const slidValues = getSliderValueRgb(i+2);            
+                    finalRgb.push(slidValues[0], slidValues[1], slidValues[2], 1);
+                }
+
+                const fullShader = new RRecolor(charInfo.recolor.full.oc, charInfo.recolor.full.cr);
+                const postShader = new RRecolor(charInfo.recolor.poster.oc, charInfo.recolor.poster.cr);
+                
+                const fullCanv = document.createElement("canvas");
+                const postCanv = document.createElement("canvas");
+
+                fullShader.addImage(fullCanv, charPath + "/" + charName + "/Full RecBase.png").then(
+                    () => {
+                        const buff = fullShader.download(finalRgb);
+                        fs.writeFileSync(charPath + "/" + charName + "/Full.png", buff);
+                    }
+                );
+                postShader.addImage(postCanv, charPath + "/" + charName + "/Poster RecBase.png").then(
+                    () => {
+                        const buff = postShader.download(finalRgb);
+                        fs.writeFileSync(charPath + "/" + charName + "/Poster.png", buff);
+                    }
+                );
+
+            } catch (e) {
+                // if a character doesnt have recolors set up, skip this character
+                console.log(characterList[i] + " skipped");
+            }
+            
+        }
+        
+    } else { // if unchecked, just overwrite with the original image
+        for (let i = 0; i < characterList.length; i++) {
+            try {
+                const buffF = fs.readFileSync(charPath + "/" + characterList[i] + "/Full Original.png");
+                fs.writeFileSync(charPath + "/" + characterList[i] + "/Full.png", buffF);
+                const buffP = fs.readFileSync(charPath + "/" + characterList[i] + "/Poster Original.png");
+                fs.writeFileSync(charPath + "/" + characterList[i] + "/Poster.png", buffP);
+            } catch (e) {
+                // if a character doesnt have recolors set up, skip this character
+                console.log(characterList[i] + " skipped");
+            }
+        }
+    }
+}
+
+
+function decodeCode(code) {
+
+    // delete those "-" from the code
+    const newHex = code.replace(/-/g, "");
+
+    // split each color for every 6 characters
+    const charHex = newHex.match(/.{1,6}/g);
+
+    for (let i = 0; i < 3; i++) {
+        
+        if (charHex[i] == "XXXXXX") {
+            recChecks[i].checked = false;
+            disEnSliders(i);
+        } else {
+            recChecks[i].checked = true;
+            disEnSliders(i);
+            if (i == 2) {
+                for (let i = 0; i < 4; i++) {
+                    const codeRgb = hex2rgb(charHex[i+2]);
+                    const codeHsv = rgb2hsv(codeRgb[0], codeRgb[1], codeRgb[2]);
+                    slidersH[i+2].value = Math.round(codeHsv[0]);
+                    slidersS[i+2].value = Math.round(codeHsv[1]);
+                    slidersV[i+2].value = Math.round(codeHsv[2]);                 
+                }
+            } else {
+                const codeRgb = hex2rgb(charHex[i]);
+                const codeHsv = rgb2hsv(codeRgb[0], codeRgb[1], codeRgb[2]);
+                slidersH[i].value = Math.round(codeHsv[0]);
+                slidersS[i].value = Math.round(codeHsv[1]);
+                slidersV[i].value = Math.round(codeHsv[2]);
+            }
+        }
+        
+    }
+    
+}
+
+function hex2rgb(hex) {
+    const rgb = [];
+    const bigint = parseInt(hex, 16);
+    rgb[0] = (bigint >> 16) & 255;
+    rgb[1] = (bigint >> 8) & 255;
+    rgb[2] = bigint & 255;
+    return rgb;
+}
+function componentToHex(c) {
+    const hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+}
+function rgbToHex(r, g, b) {
+    return componentToHex(r) + componentToHex(g) + componentToHex(b);
+}
+
+function hsv2rgb(H, S, V) {
+
+    let C = V * S;
+ 
+    H *= 6;
+    let X = C * (1 - Math.abs( H % 2 - 1 ));
+    let m = V - C;
+    C += m;
+    X += m;
+ 
+    if (H < 1) return [C, X, m];
+    if (H < 2) return [X, C, m];
+    if (H < 3) return [m, C, X];
+    if (H < 4) return [m, X, C];
+    if (H < 5) return [X, m, C];
+    else       return [C, m, X];
+
+}
+
+function rgb2hsv (r, g, b) {
+
+    r = r/255, g = g/255, b = b/255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h, s, v = max;
+
+    const d = max - min;
+    s = max == 0 ? 0 : d / max;
+
+    if (max == min) {
+        h = 0; // achromatic
+    } else {
+        switch(max){
+            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+            case g: h = (b - r) / d + 2; break;
+            case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+    }
+
+    h = h * 360;
+    s = s * 100;
+    v = v * 100;
+
+    return [h, s, v];
 
 }

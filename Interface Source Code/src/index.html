@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>RR Stream Tool</title>
     <link rel="stylesheet" href="index.css">
+    <script src="RR WebGL Shader.js" defer></script>
     <script src="gui.js" defer></script>
     <script src="mousetrap.min.js" defer></script>
   </head>
@@ -337,26 +338,133 @@
       </div>
 
       <div id="settings">
-        <div id="settingsTitle">SETTINGS</div>
 
-        <div id="actualSettings">
+        <div id="normalSettings">
 
-          <div class="settingBox" title="Plays an intro on 'Scoreboard.html' whenever the file loads">
-            <input type="checkbox" id="allowIntro" class="settingsCheck" tabindex="-1">
-            <label for="allowIntro" class="settingsText">Allow Intro</span>
-          </div>
-          
-          <div class="settingBox" title="Forces the [W]/[L] buttons to appear on the interface.
+          <div id="settingsTitle">SETTINGS</div>
+
+          <div id="actualSettings">
+
+            <div class="settingBox" title="Plays an intro on 'Scoreboard.html' whenever the file loads">
+              <input type="checkbox" id="allowIntro" class="settingsCheck" tabindex="-1">
+              <label for="allowIntro" class="settingsText">Allow Intro</span>
+            </div>
+            
+            <div class="settingBox" title="Forces the [W]/[L] buttons to appear on the interface.
 They will always appear when typing 'Grand' in the round box.">
-            <input type="checkbox" id="forceWLToggle" class="settingsCheck" tabindex="-1">
-            <label for="forceWLToggle" class="settingsText">Force [W] / [L]</span>
+              <input type="checkbox" id="forceWLToggle" class="settingsCheck" tabindex="-1">
+              <label for="forceWLToggle" class="settingsText">Force [W] / [L]</span>
+            </div>
+
+            <button id="copyMatch" tabindex="-1" title='"Tournament Name - Round - Player1 (Character1) VS Player2 (Character2)"'>
+              Copy match info to clipboard
+            </button>
+
+            <div class="center">
+              <button id="goToRecolor" tabindex="-1" title="Change the colors of overlays and character arts">
+                Change colors
+              </button>
+            </div>
+            
+
           </div>
 
-          <button id="copyMatch" tabindex="-1" title='"Tournament Name - Round - Player1 (Character1) VS Player2 (Character2)"'>
-            Copy match info to clipboard
-          </button>
+          <div id="recolorSettings">
+            
+            <div id="hsvButts">
+              <button id="hueButt" class="hsvButt" tabindex="-1" title="Change sliders to Hue">Hue</button>
+              <button id="satButt" class="hsvButt" tabindex="-1" title="Change sliders to Saturation">Sat</button>
+              <button id="valButt" class="hsvButt" tabindex="-1" title="Change sliders to Value">Val</button>
+            </div>
 
-        </div>        
+            <div class="sliDiv">
+              <div>
+                <input type="checkbox" id="VScheck" class="recCheck" tabindex="-1" checked title="Deactivate to get the default image on save">
+                <label for="VScheck" class="sliLab">VS</label>
+              </div>
+              <input type="range" min="0" max="360" class="slider sliderH" autocomplete="off" tabindex="-1">
+              <input type="range" min="0" max="100" class="slider sliderS" autocomplete="off" tabindex="-1">
+              <input type="range" min="0" max="100" class="slider sliderV" autocomplete="off" tabindex="-1">
+            </div>
+
+            <div class="sliDiv">
+              <div>
+                <input type="checkbox" id="SCcheck" class="recCheck" tabindex="-1" checked disabled title="Deactivate to get the default image on save">
+                <label for="SCcheck" class="sliLab">SC</label>
+              </div>
+              <input type="range" min="0" max="360" class="slider sliderH" autocomplete="off" tabindex="-1">
+              <input type="range" min="0" max="100" class="slider sliderS" autocomplete="off" tabindex="-1">
+              <input type="range" min="0" max="100" class="slider sliderV" autocomplete="off" tabindex="-1">
+            </div>
+
+            <div class="sliDiv">
+              <div>
+                <input type="checkbox" id="Cha1check" class="recCheck" tabindex="-1" checked title="Deactivate to get the default image on save">
+                <label for="Cha1check" class="sliLab">Ch.1</label>
+              </div>
+              <input type="range" min="0" max="360" class="slider sliderH" autocomplete="off" tabindex="-1">
+              <input type="range" min="0" max="100" class="slider sliderS" autocomplete="off" tabindex="-1">
+              <input type="range" min="0" max="100" class="slider sliderV" autocomplete="off" tabindex="-1">
+            </div>
+
+            <div class="sliDiv">
+              <div>
+                <div class="fillerSquare"></div>
+                <label for="Cha2check" class="sliLab">Ch.2</label>
+              </div>
+              <input type="range" min="0" max="360" class="slider sliderH" autocomplete="off" tabindex="-1">
+              <input type="range" min="0" max="100" class="slider sliderS" autocomplete="off" tabindex="-1">
+              <input type="range" min="0" max="100" class="slider sliderV" autocomplete="off" tabindex="-1">
+            </div>
+
+            <div class="sliDiv">
+              <div>
+                <div class="fillerSquare"></div>
+                <label for="Cha3check" class="sliLab">Ch.3</label>
+              </div>
+              <input type="range" min="0" max="360" class="slider sliderH" autocomplete="off" tabindex="-1">
+              <input type="range" min="0" max="100" class="slider sliderS" autocomplete="off" tabindex="-1">
+              <input type="range" min="0" max="100" class="slider sliderV" autocomplete="off" tabindex="-1">
+            </div>
+
+            <div class="sliDiv">
+              <div>
+                <div class="fillerSquare"></div>
+                <label for="Cha4check" class="sliLab">Ch.4</label>
+              </div>
+              <input type="range" min="0" max="360" class="slider sliderH" autocomplete="off" tabindex="-1">
+              <input type="range" min="0" max="100" class="slider sliderS" autocomplete="off" tabindex="-1">
+              <input type="range" min="0" max="100" class="slider sliderV" autocomplete="off" tabindex="-1">
+            </div>
+
+            <div id="recButts">
+              <button id="backToSettings" class="recButt" tabindex="-1" title="Go back to the Stream Tool GUI">Go back</button>
+              <button id="saveRecolor" class="recButt" tabindex="-1" title="Generate new images with the settings above. Refresh browser sources in OBS to see changes.">Save</button>
+              <button id="defaultRecolor" class="recButt" tabindex="-1" title="Reset sliders and checks to default">Defaults</button>
+            </div>
+          </div>
+
+        </div>
+
+        <div id="recolorRight">
+
+          <div id="topBarRecolor">
+            <select id="recList">
+              <option value="VS Screen">VS Screen</option>
+              <option value="Scoreboard">Scoreboard</option>
+            </select>
+            <input type="radio" id="recRadioF" name="recType" checked="checked" disabled>
+            <label for="recRadioF">Full</label>
+            <input type="radio" id="recRadioP" name="recType" disabled>
+            <label for="recRadioP">Poster</label>
+          </div>
+
+          <div id="canContainer">
+            <canvas id="recolorImg"></canvas>
+          </div>
+
+        </div>
+
       </div>
 
       <div id="charRoster">

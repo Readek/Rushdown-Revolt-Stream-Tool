@@ -35,6 +35,7 @@ body {
   user-select: none;
   font-family: 'Roboto-Regular';
   font-size: 16px;
+  text-align: center;
 }
 
 
@@ -655,6 +656,7 @@ input[type="text"] {
 
 .settingsText {
   width: 100%;
+  text-align: left;
 }
 
 #copyMatch {
@@ -867,6 +869,22 @@ input[type="text"] {
   filter: brightness(1.4);
 }
 
+#recFeedback {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  opacity: 0;
+}
+.showFeedbackAnim {
+  animation: showFeedback 4s;
+}
+@keyframes showFeedback {
+  0% {opacity: 1;}
+  80% {opacity: 1;}
+  100% {opacity: 0;}
+}
 
 #recolorRight {
   width: 60%;

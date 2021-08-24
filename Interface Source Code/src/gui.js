@@ -1,16 +1,17 @@
 'use strict';
 
+const { info } = require('console');
 const fs = require('fs');
 const path = require('path');
 
 //path variables used when developing
-const mainPath = path.resolve(__dirname, '..', '..', 'Stream Tool', 'Resources', 'Texts');
-const charPath = path.resolve(__dirname, '..', '..', 'Stream Tool', 'Resources', 'Characters');
+/* const mainPath = path.resolve(__dirname, '..', '..', 'Stream Tool', 'Resources', 'Texts');
+const charPath = path.resolve(__dirname, '..', '..', 'Stream Tool', 'Resources', 'Characters'); */
 
 //change to these paths when building the executable
 //Linux (appimage)
-/* const mainPath = path.resolve('.', 'Resources', 'Texts');
-const charPath = path.resolve('.', 'Resources', 'Characters'); */
+const mainPath = path.resolve('.', 'Resources', 'Texts');
+const charPath = path.resolve('.', 'Resources', 'Characters');
 //Windows (if building a portable exe)
 /* const mainPath = path.resolve(process.env.PORTABLE_EXECUTABLE_DIR, 'Resources', 'Texts');
 const charPath = path.resolve(process.env.PORTABLE_EXECUTABLE_DIR, 'Resources', 'Characters'); */
@@ -64,7 +65,8 @@ const recList = document.getElementById("recList");
 const recRadioF = document.getElementById("recRadioF");
 const recRadioP = document.getElementById("recRadioP");
 
-let defaultCode, currentCode;
+const recCan = document.getElementById("recolorImg");
+let recSha, defaultCode, currentCode, skippedChars;
 
 
 // load gui settings
@@ -1247,19 +1249,14 @@ document.getElementById("valButt").addEventListener("click", () => {
 })
 
 
-// setup the shader
-const recCan = document.getElementById("recolorImg");
-let recSha = new RRecolor([212, 133, 135, 1], [100, 100, 100, 1]);
+// startup the shader with the VS image values
+recSha = new RRecolor([212, 133, 135, 1], [100, 100, 100, 1]);
 recSha.addImage(recCan, mainPath + "/../Overlay/VS Screen/VS Lightning RecBase.png").then(() => {
     // use the stored code to set the initial values
     decodeCode(currentCode);
     // we need to do a first faint to display the image;
-    const finalRgb = [];
-
     const slidValues = getSliderValueRgb(0);
-    finalRgb.push(slidValues[0], slidValues[1], slidValues[2], 1);
-
-    recSha.recolor(finalRgb);
+    recSha.recolor([slidValues[0], slidValues[1], slidValues[2], 1]);
 }
 );
 
@@ -1275,11 +1272,11 @@ function disEnSliders(num) {
     slidersH[num].disabled = isDisabled;
     slidersS[num].disabled = isDisabled;
     slidersV[num].disabled = isDisabled;
-    if (num == 2) {
+    if (num == 1) { // for character sliders
         for (let i = 0; i < 3; i++) {
-            slidersH[i+3].disabled = isDisabled;
-            slidersS[i+3].disabled = isDisabled;
-            slidersV[i+3].disabled = isDisabled;
+            slidersH[i+2].disabled = isDisabled;
+            slidersS[i+2].disabled = isDisabled;
+            slidersV[i+2].disabled = isDisabled;
         }
     }
 
@@ -1295,10 +1292,8 @@ document.getElementById("defaultRecolor").addEventListener("click", () => {
     decodeCode(defaultCode);
     if (recList.selectedIndex == 0) {
         sliderMoved(0);
-    } else if (recList.selectedIndex == 1) {
-        sliderMoved(1);
     } else {
-        sliderMoved(2);
+        sliderMoved(1);
     }
     for (let i = 0; i < slidersH.length; i++) {
         colorSliders(i);    
@@ -1317,13 +1312,13 @@ function sliderMoved(num) {
 
     const rgbFromHsv = getSliderValueRgb(num)
 
-    if (recList.selectedIndex >= 2) {
+    if (recList.selectedIndex >= 1) {
         
-        if (num >= 2) {
+        if (num >= 1) {
             const finalRgb = [];
 
             for (let i = 0; i < 4; i++) {
-                const slidValues = getSliderValueRgb(i+2);
+                const slidValues = getSliderValueRgb(i+1);
                 finalRgb.push(slidValues[0], slidValues[1], slidValues[2], 1);
             }
 
@@ -1374,21 +1369,17 @@ for (let i = 0; i < characterList.length; i++) {
 recList.addEventListener("change", recCharChange);
 function recCharChange() {
 
-    if (this.selectedIndex < 2) {
+    if (this.selectedIndex < 1) {
 
         // disable the radio buttons
         recRadioF.disabled = true;
         recRadioP.disabled = true;
         
-        if (this.selectedIndex == 0) { // VS Screen
-            const rgbFromHsv = getSliderValueRgb(0);
-            recSha = new RRecolor([212, 133, 135, 1], [100, 100, 100, 1]);
-            recSha.addImage(recCan, mainPath + "/../Overlay/VS Screen/VS Lightning RecBase.png").then(
-                () => {recSha.recolor([rgbFromHsv[0], rgbFromHsv[1], rgbFromHsv[2], 1])}
-            );
-        } else { // SC
-            
-        }
+        const rgbFromHsv = getSliderValueRgb(0);
+        recSha = new RRecolor([212, 133, 135, 1], [100, 100, 100, 1]);
+        recSha.addImage(recCan, mainPath + "/../Overlay/VS Screen/VS Lightning RecBase.png").then(
+            () => {recSha.recolor([rgbFromHsv[0], rgbFromHsv[1], rgbFromHsv[2], 1])}
+        );
         
     } else {
         newCharImg();
@@ -1405,7 +1396,7 @@ function newCharImg() {
     const charInfo = getCharJson(charName);
 
     for (let i = 0; i < 4; i++) {
-        const slidValues = getSliderValueRgb(i+2);            
+        const slidValues = getSliderValueRgb(i+1);            
         finalRgb.push(slidValues[0], slidValues[1], slidValues[2], 1)          
     }
 
@@ -1423,15 +1414,44 @@ function newCharImg() {
 }
 
 // when radio buttons are clicked, swap the render (if we have a char selected)
-recRadioF.addEventListener("click", () => {if (recList.selectedIndex >= 2) {newCharImg()}});
-recRadioP.addEventListener("click", () => {if (recList.selectedIndex >= 2) {newCharImg()}});
+recRadioF.addEventListener("click", () => {if (recList.selectedIndex >= 1) {newCharImg()}});
+recRadioP.addEventListener("click", () => {if (recList.selectedIndex >= 1) {newCharImg()}});
 
 
 // save images
 document.getElementById("saveRecolor").addEventListener("click", () => {
 
-    recSaveVS();
-    recSaveChars();
+    skippedChars = [];
+
+    const promises = [
+        recSaveVS(),
+        recSaveChars()
+    ]
+    Promise.all(promises).then( () => {
+        const recFeedback = document.getElementById("recFeedback");
+
+        if (skippedChars[0]) {
+            let infoText = "Characters were skipped:\n";
+            for (let i = 0; i < skippedChars.length; i++) {
+                if (i != skippedChars.length - 1) {
+                    infoText += skippedChars[i] + ", "
+                } else {
+                    infoText += skippedChars[i] + "."
+                }                
+            }
+            recFeedback.innerHTML = infoText;
+            recFeedback.style.color = "var(--text2)";
+        } else {
+            recFeedback.innerHTML = "Images saved successfully";
+            recFeedback.style.color = "green";
+        }
+
+        recFeedback.classList.remove("showFeedbackAnim");
+        setTimeout(() => { // yes i know this is bad practice
+            recFeedback.classList.add("showFeedbackAnim");
+        }, 20);
+
+    })
 
     // save the color code so the GUI retains the slider values next time it loads
     changeCurrentCode();
@@ -1457,7 +1477,7 @@ function recSaveVS() {
     }
 }
 function recSaveChars() {
-    if (recChecks[2].checked) {
+    if (recChecks[1].checked) {
 
         for (let i = 0; i < characterList.length; i++) {
             
@@ -1468,7 +1488,7 @@ function recSaveChars() {
                 const charInfo = getCharJson(charName);
 
                 for (let i = 0; i < 4; i++) {
-                    const slidValues = getSliderValueRgb(i+2);            
+                    const slidValues = getSliderValueRgb(i+1);            
                     finalRgb.push(slidValues[0], slidValues[1], slidValues[2], 1);
                 }
 
@@ -1493,7 +1513,7 @@ function recSaveChars() {
 
             } catch (e) {
                 // if a character doesnt have recolors set up, skip this character
-                console.log(characterList[i] + " skipped");
+                skippedChars.push(characterList[i]);
             }
             
         }
@@ -1520,37 +1540,28 @@ function changeCurrentCode() {
 
     let newCurrent = "";
 
-    for (let i = 0; i < 3; i++) {
+    if (recChecks[0].checked) {
+        const rgbSliders = getSliderValueRgb(0)
+        newCurrent += rgb2Hex(rgbSliders[0], rgbSliders[1], rgbSliders[2]);
+        newCurrent += "-"
+    } else {
+        newCurrent += "XXXXXX-"
+    }
 
-        if (i < 2) {
-            if (recChecks[i].checked) {
-                const rgbSliders = getSliderValueRgb(i)
-                newCurrent += rgb2Hex(rgbSliders[0], rgbSliders[1], rgbSliders[2]);
+    if (recChecks[1].checked) {
+        for (let i = 0; i < 4; i++) {
+            
+            const rgbSliders = getSliderValueRgb(i+1)
+            newCurrent += rgb2Hex(rgbSliders[0], rgbSliders[1], rgbSliders[2]);
+            
+            if (i < 3) {
                 newCurrent += "-"
-            } else {
-                newCurrent += "XXXXXX-"
-            }
-        } else {
-
-            if (recChecks[i].checked) {
-                for (let i = 0; i < 4; i++) {
-                    
-                    const rgbSliders = getSliderValueRgb(i+2)
-                newCurrent += rgb2Hex(rgbSliders[0], rgbSliders[1], rgbSliders[2]);
-                    
-                    if (i < 3) {
-                        newCurrent += "-"
-                    }
-
-                }
-            } else {
-                newCurrent += "XXXXXX-XXXXXX-XXXXXX-XXXXXX"
             }
 
         }
-
+    } else {
+        newCurrent += "XXXXXX-XXXXXX-XXXXXX-XXXXXX"
     }
-
 
     guiSettings.currentColorCode = newCurrent;
     
@@ -1568,7 +1579,7 @@ function decodeCode(code) {
     // split each color for every 6 characters
     const charHex = newHex.match(/.{1,6}/g);
 
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 2; i++) {
         
         if (charHex[i] == "XXXXXX") {
             recChecks[i].checked = false;
@@ -1576,13 +1587,13 @@ function decodeCode(code) {
         } else {
             recChecks[i].checked = true;
             disEnSliders(i);
-            if (i == 2) {
+            if (i == 1) {
                 for (let i = 0; i < 4; i++) {
-                    const codeRgb = hex2rgb(charHex[i+2]);
+                    const codeRgb = hex2rgb(charHex[i+1]);
                     const codeHsv = rgb2hsv(codeRgb[0], codeRgb[1], codeRgb[2]);
-                    slidersH[i+2].value = Math.round(codeHsv[0]);
-                    slidersS[i+2].value = Math.round(codeHsv[1]);
-                    slidersV[i+2].value = Math.round(codeHsv[2]);                 
+                    slidersH[i+1].value = Math.round(codeHsv[0]);
+                    slidersS[i+1].value = Math.round(codeHsv[1]);
+                    slidersV[i+1].value = Math.round(codeHsv[2]);                 
                 }
             } else {
                 const codeRgb = hex2rgb(charHex[i]);

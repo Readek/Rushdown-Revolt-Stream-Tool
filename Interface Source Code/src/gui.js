@@ -64,9 +64,18 @@ const recList = document.getElementById("recList");
 const recRadioF = document.getElementById("recRadioF");
 const recRadioP = document.getElementById("recRadioP");
 
-const defaultCode = "D48587-XXXXXX-C22B65-B0523A-6E3073-804987";
+let defaultCode, currentCode;
 
 
+// load gui settings
+loadSettings();
+function loadSettings() {
+    let guiSettings = JSON.parse(fs.readFileSync(mainPath + "/GUI Settings.json", "utf-8"));
+    if (guiSettings.forceWL) {forceWL.click()}
+    document.getElementById("allowIntro").checked = guiSettings.allowIntro;
+    defaultCode = guiSettings.defaultColorCode;
+    currentCode = guiSettings.currentColorCode;
+}
 
 window.onload = init;
 function init() {
@@ -172,6 +181,7 @@ function init() {
     /* SETTINGS */
 
     //set listeners for the settings checkboxes
+    document.getElementById("allowIntro").addEventListener("click", allowIntroToggle)
     forceWL.addEventListener("click", forceWLtoggles);
     document.getElementById("copyMatch").addEventListener("click", copyMatch);
     document.getElementById("goToRecolor").addEventListener("click", toRecolors);
@@ -1024,19 +1034,36 @@ function setScore(score, tick1, tick2, tick3) {
 }
 
 
+function allowIntroToggle() {
+    let guiSettings = JSON.parse(fs.readFileSync(mainPath + "/GUI Settings.json", "utf-8"));
+    guiSettings.allowIntro = this.checked;
+    guiSettings = JSON.stringify(guiSettings, null, 2);
+    fs.writeFileSync(mainPath + "/GUI Settings.json", guiSettings);
+}
+
 //forces the W/L buttons to appear, or unforces them
 function forceWLtoggles() {
+    
     const wlButtons = document.getElementsByClassName("wlButtons");
+
+    let guiSettings = JSON.parse(fs.readFileSync(mainPath + "/GUI Settings.json", "utf-8"));
+
     if (forceWL.checked) {
         for (let i = 0; i < wlButtons.length; i++) {
             wlButtons[i].style.display = "flex";
+            guiSettings.forceWL = true;
         }
     } else {
         for (let i = 0; i < wlButtons.length; i++) {
             wlButtons[i].style.display = "none";
             deactivateWL();
+            guiSettings.forceWL = false;
         }
     }
+
+    guiSettings = JSON.stringify(guiSettings, null, 2);
+    fs.writeFileSync(mainPath + "/GUI Settings.json", guiSettings);
+
 }
 
 
@@ -1223,12 +1250,19 @@ document.getElementById("valButt").addEventListener("click", () => {
 // setup the shader
 const recCan = document.getElementById("recolorImg");
 let recSha = new RRecolor([212, 133, 135, 1], [100, 100, 100, 1]);
-recSha.addImage(recCan, mainPath + "/../Overlay/VS Screen/VS Lightning RecBase.png").then(
-    () => {recSha.recolor()}
+recSha.addImage(recCan, mainPath + "/../Overlay/VS Screen/VS Lightning RecBase.png").then(() => {
+    // use the stored code to set the initial values
+    decodeCode(currentCode);
+    // we need to do a first faint to display the image;
+    const finalRgb = [];
+
+    const slidValues = getSliderValueRgb(0);
+    finalRgb.push(slidValues[0], slidValues[1], slidValues[2], 1);
+
+    recSha.recolor(finalRgb);
+}
 );
 
-
-let currentCode = defaultCode; // todo read from file
 
 // to enable/disable sliders
 for (let i = 0; i < recChecks.length; i++) {
@@ -1251,9 +1285,6 @@ function disEnSliders(num) {
 
 }
 
-// use the stored code to set the initial values
-decodeCode(currentCode);
-
 // set the initial color for the S and V sliders
 for (let i = 0; i < slidersH.length; i++) {
     colorSliders(i);    
@@ -1272,6 +1303,7 @@ document.getElementById("defaultRecolor").addEventListener("click", () => {
     for (let i = 0; i < slidersH.length; i++) {
         colorSliders(i);    
     }
+    changeCurrentCode();
 })
 
 
@@ -1399,14 +1431,17 @@ recRadioP.addEventListener("click", () => {if (recList.selectedIndex >= 2) {newC
 document.getElementById("saveRecolor").addEventListener("click", () => {
 
     recSaveVS();
-    recSaveChars();    
+    recSaveChars();
+
+    // save the color code so the GUI retains the slider values next time it loads
+    changeCurrentCode();
     
 })
 function recSaveVS() {
 
     if (recChecks[0].checked) { // if we got stuff to recolor
         
-        const rgbFromHsv = getSliderValueRgb(0);   
+        const rgbFromHsv = getSliderValueRgb(0);
         const vsShader = new RRecolor([212, 133, 135, 1], [100, 100, 100, 1]);
         const vsCanv = document.createElement("canvas");
         vsShader.addImage(vsCanv, mainPath + "/../Overlay/VS Screen/VS Lightning RecBase.png").then(
@@ -1479,6 +1514,52 @@ function recSaveChars() {
 }
 
 
+function changeCurrentCode() {
+    
+    let guiSettings = JSON.parse(fs.readFileSync(mainPath + "/GUI Settings.json", "utf-8"));
+
+    let newCurrent = "";
+
+    for (let i = 0; i < 3; i++) {
+
+        if (i < 2) {
+            if (recChecks[i].checked) {
+                const rgbSliders = getSliderValueRgb(i)
+                newCurrent += rgb2Hex(rgbSliders[0], rgbSliders[1], rgbSliders[2]);
+                newCurrent += "-"
+            } else {
+                newCurrent += "XXXXXX-"
+            }
+        } else {
+
+            if (recChecks[i].checked) {
+                for (let i = 0; i < 4; i++) {
+                    
+                    const rgbSliders = getSliderValueRgb(i+2)
+                newCurrent += rgb2Hex(rgbSliders[0], rgbSliders[1], rgbSliders[2]);
+                    
+                    if (i < 3) {
+                        newCurrent += "-"
+                    }
+
+                }
+            } else {
+                newCurrent += "XXXXXX-XXXXXX-XXXXXX-XXXXXX"
+            }
+
+        }
+
+    }
+
+
+    guiSettings.currentColorCode = newCurrent;
+    
+    guiSettings = JSON.stringify(guiSettings, null, 2);
+    fs.writeFileSync(mainPath + "/GUI Settings.json", guiSettings);
+
+}
+
+
 function decodeCode(code) {
 
     // delete those "-" from the code
@@ -1528,7 +1609,7 @@ function componentToHex(c) {
     const hex = c.toString(16);
     return hex.length == 1 ? "0" + hex : hex;
 }
-function rgbToHex(r, g, b) {
+function rgb2Hex(r, g, b) {
     return componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
 

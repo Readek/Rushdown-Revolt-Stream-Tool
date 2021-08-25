@@ -885,6 +885,13 @@ input[type="text"] {
   80% {opacity: 1;}
   100% {opacity: 0;}
 }
+.recFeedbackAlert {
+  color: rgb(255, 187, 0);
+  transform: translateY(-8px);
+}
+.recFeedbackSucc {
+  color: rgb(68, 206, 68);
+}
 
 #recolorRight {
   width: 60%;

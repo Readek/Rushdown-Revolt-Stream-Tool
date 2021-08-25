@@ -390,7 +390,14 @@ They will always appear when typing 'Grand' in the round box.">
             <div class="sliDiv">
               <div>
                 <input type="checkbox" id="Cha1check" class="recCheck" tabindex="-1" checked title="Deactivate to get the default image on save">
-                <label for="Cha1check" class="sliLab">Ch.1</label>
+                <label for="Cha1check" class="sliLab">Chars.</label>
+              </div>
+            </div>
+
+            <div class="sliDiv">
+              <div>
+                <div class="fillerSquare"></div>
+                <label class="sliLab">Hair</label>
               </div>
               <input type="range" min="0" max="360" class="slider sliderH" autocomplete="off" tabindex="-1">
               <input type="range" min="0" max="100" class="slider sliderS" autocomplete="off" tabindex="-1">
@@ -400,7 +407,7 @@ They will always appear when typing 'Grand' in the round box.">
             <div class="sliDiv">
               <div>
                 <div class="fillerSquare"></div>
-                <label for="Cha2check" class="sliLab">Ch.2</label>
+                <label class="sliLab">Light</label>
               </div>
               <input type="range" min="0" max="360" class="slider sliderH" autocomplete="off" tabindex="-1">
               <input type="range" min="0" max="100" class="slider sliderS" autocomplete="off" tabindex="-1">
@@ -410,7 +417,7 @@ They will always appear when typing 'Grand' in the round box.">
             <div class="sliDiv">
               <div>
                 <div class="fillerSquare"></div>
-                <label for="Cha3check" class="sliLab">Ch.3</label>
+                <label class="sliLab">Dark</label>
               </div>
               <input type="range" min="0" max="360" class="slider sliderH" autocomplete="off" tabindex="-1">
               <input type="range" min="0" max="100" class="slider sliderS" autocomplete="off" tabindex="-1">
@@ -420,7 +427,7 @@ They will always appear when typing 'Grand' in the round box.">
             <div class="sliDiv">
               <div>
                 <div class="fillerSquare"></div>
-                <label for="Cha4check" class="sliLab">Ch.4</label>
+                <label class="sliLab">Other</label>
               </div>
               <input type="range" min="0" max="360" class="slider sliderH" autocomplete="off" tabindex="-1">
               <input type="range" min="0" max="100" class="slider sliderS" autocomplete="off" tabindex="-1">
@@ -441,13 +448,10 @@ They will always appear when typing 'Grand' in the round box.">
         <div id="recolorRight">
 
           <div id="topBarRecolor">
-            <select id="recList">
-              <option value="VS Screen">VS Screen</option>
-              <option value="Scoreboard">Scoreboard</option>
-            </select>
-            <input type="radio" id="recRadioF" name="recType" checked="checked" disabled>
+            <select id="recList"></select>
+            <input type="radio" id="recRadioF" name="recType" checked="checked">
             <label for="recRadioF">Full</label>
-            <input type="radio" id="recRadioP" name="recType" disabled>
+            <input type="radio" id="recRadioP" name="recType">
             <label for="recRadioP">Poster</label>
           </div>
 

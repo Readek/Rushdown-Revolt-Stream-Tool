@@ -5,13 +5,13 @@ const fs = require('fs');
 const path = require('path');
 
 //path variables used when developing
-/* const mainPath = path.resolve(__dirname, '..', '..', 'Stream Tool', 'Resources', 'Texts');
-const charPath = path.resolve(__dirname, '..', '..', 'Stream Tool', 'Resources', 'Characters'); */
+const mainPath = path.resolve(__dirname, '..', '..', 'Stream Tool', 'Resources', 'Texts');
+const charPath = path.resolve(__dirname, '..', '..', 'Stream Tool', 'Resources', 'Characters');
 
 //change to these paths when building the executable
 //Linux (appimage)
-const mainPath = path.resolve('.', 'Resources', 'Texts');
-const charPath = path.resolve('.', 'Resources', 'Characters');
+/* const mainPath = path.resolve('.', 'Resources', 'Texts');
+const charPath = path.resolve('.', 'Resources', 'Characters'); */
 //Windows (if building a portable exe)
 /* const mainPath = path.resolve(process.env.PORTABLE_EXECUTABLE_DIR, 'Resources', 'Texts');
 const charPath = path.resolve(process.env.PORTABLE_EXECUTABLE_DIR, 'Resources', 'Characters'); */
@@ -66,7 +66,7 @@ const recRadioF = document.getElementById("recRadioF");
 const recRadioP = document.getElementById("recRadioP");
 
 const recCan = document.getElementById("recolorImg");
-let recSha, defaultCode, currentCode, skippedChars;
+let recSha, defaultCode, currentCode, skippedChars, currentRecCha;
 
 
 // load gui settings
@@ -1249,17 +1249,8 @@ document.getElementById("valButt").addEventListener("click", () => {
 })
 
 
-// startup the shader with the VS image values
-recSha = new RRecolor([212, 133, 135, 1], [100, 100, 100, 1]);
-recSha.addImage(recCan, mainPath + "/../Overlay/VS Screen/VS Lightning RecBase.png").then(() => {
-    // use the stored code to set the initial values
-    decodeCode(currentCode);
-    // we need to do a first faint to display the image;
-    const slidValues = getSliderValueRgb(0);
-    recSha.recolor([slidValues[0], slidValues[1], slidValues[2], 1]);
-}
-);
-
+// use the stored code to set the initial values
+decodeCode(currentCode);
 
 // to enable/disable sliders
 for (let i = 0; i < recChecks.length; i++) {
@@ -1290,7 +1281,7 @@ for (let i = 0; i < slidersH.length; i++) {
 // defaults button, just restores everything
 document.getElementById("defaultRecolor").addEventListener("click", () => {
     decodeCode(defaultCode);
-    if (recList.selectedIndex == 0) {
+    if (currentRecCha == -1) {
         sliderMoved(0);
     } else {
         sliderMoved(1);
@@ -1308,27 +1299,41 @@ for (let i = 0; i < slidersH.length; i++) {
     slidersV[i].oninput = () => {sliderMoved(i)}; 
 }
 
-function sliderMoved(num) {
+async function sliderMoved(num) {
+
+    if (num == 0 && currentRecCha >= 0) {
+        currentRecCha = -1;
+        recSha = new RRecolor([212, 133, 135, 1], [100, 100, 100, 1]);
+        await recSha.addImage(recCan, mainPath + "/../Overlay/VS Screen/VS Lightning RecBase.png");
+    } else if (num > 0 && currentRecCha == -1) {
+        currentRecCha = recList.selectedIndex;
+        const charName = recList.selectedOptions[0].text;
+        const charInfo = getCharJson(charName);
+        if (recRadioP.checked) {
+            recSha = new RRecolor(charInfo.recolor.poster.oc, charInfo.recolor.poster.cr);
+            await recSha.addImage(recCan, charPath + "/" + charName + "/Poster RecBase.png");
+        } else {
+            recSha = new RRecolor(charInfo.recolor.full.oc, charInfo.recolor.full.cr);
+            await recSha.addImage(recCan, charPath + "/" + charName + "/Full RecBase.png");
+        }
+
+    }
 
     const rgbFromHsv = getSliderValueRgb(num)
 
-    if (recList.selectedIndex >= 1) {
+    if (currentRecCha >= 0) {
         
-        if (num >= 1) {
-            const finalRgb = [];
+        const finalRgb = [];
 
-            for (let i = 0; i < 4; i++) {
-                const slidValues = getSliderValueRgb(i+1);
-                finalRgb.push(slidValues[0], slidValues[1], slidValues[2], 1);
-            }
-
-            recSha.recolor(finalRgb);
+        for (let i = 0; i < 4; i++) {
+            const slidValues = getSliderValueRgb(i+1);
+            finalRgb.push(slidValues[0], slidValues[1], slidValues[2], 1);
         }
+
+        recSha.recolor(finalRgb);
 
     } else {
-        if (num == recList.selectedIndex) {
-            recSha.recolor([rgbFromHsv[0], rgbFromHsv[1], rgbFromHsv[2], 1]);
-        }
+        recSha.recolor([rgbFromHsv[0], rgbFromHsv[1], rgbFromHsv[2], 1]);
     }
 
     colorSliders(num);
@@ -1358,7 +1363,7 @@ function colorSliders(num) {
 }
 
 
-// Add new entries for each character
+// Add new entries to the char list for each character
 const characterList = getCharList();
 for (let i = 0; i < characterList.length; i++) {
     const option = document.createElement('option'); //create new entry
@@ -1366,31 +1371,14 @@ for (let i = 0; i < characterList.length; i++) {
     recList.add(option); //add the entry to the combo list
 }
 
-recList.addEventListener("change", recCharChange);
-function recCharChange() {
+// startup the shader with a random character
+currentRecCha = genRnd(0, characterList.length-1);
+recList.selectedIndex = currentRecCha;
+newCharImg();
 
-    if (this.selectedIndex < 1) {
 
-        // disable the radio buttons
-        recRadioF.disabled = true;
-        recRadioP.disabled = true;
-        
-        const rgbFromHsv = getSliderValueRgb(0);
-        recSha = new RRecolor([212, 133, 135, 1], [100, 100, 100, 1]);
-        recSha.addImage(recCan, mainPath + "/../Overlay/VS Screen/VS Lightning RecBase.png").then(
-            () => {recSha.recolor([rgbFromHsv[0], rgbFromHsv[1], rgbFromHsv[2], 1])}
-        );
-        
-    } else {
-        newCharImg();
-        // enable the radio buttons
-        recRadioF.disabled = false;
-        recRadioP.disabled = false;
-    }
-
-}
-
-function newCharImg() {
+recList.addEventListener("change", newCharImg);
+async function newCharImg() {
     const charName = recList.selectedOptions[0].text;
     const finalRgb = [];
     const charInfo = getCharJson(charName);
@@ -1411,11 +1399,13 @@ function newCharImg() {
             () => {recSha.recolor(finalRgb)}
         );
     }
+
+    currentRecCha = recList.selectedIndex;
 }
 
 // when radio buttons are clicked, swap the render (if we have a char selected)
-recRadioF.addEventListener("click", () => {if (recList.selectedIndex >= 1) {newCharImg()}});
-recRadioP.addEventListener("click", () => {if (recList.selectedIndex >= 1) {newCharImg()}});
+recRadioF.addEventListener("click", () => {newCharImg()});
+recRadioP.addEventListener("click", () => {newCharImg()});
 
 
 // save images
@@ -1431,7 +1421,7 @@ document.getElementById("saveRecolor").addEventListener("click", () => {
         const recFeedback = document.getElementById("recFeedback");
 
         if (skippedChars[0]) {
-            let infoText = "Characters were skipped:\n";
+            let infoText = "Skipped characters:\n";
             for (let i = 0; i < skippedChars.length; i++) {
                 if (i != skippedChars.length - 1) {
                     infoText += skippedChars[i] + ", "
@@ -1440,10 +1430,12 @@ document.getElementById("saveRecolor").addEventListener("click", () => {
                 }                
             }
             recFeedback.innerHTML = infoText;
-            recFeedback.style.color = "var(--text2)";
+            recFeedback.classList.remove("recFeedbackSucc");
+            recFeedback.classList.add("recFeedbackAlert");
         } else {
             recFeedback.innerHTML = "Images saved successfully";
-            recFeedback.style.color = "green";
+            recFeedback.classList.remove("recFeedbackAlert");
+            recFeedback.classList.add("recFeedbackSucc");
         }
 
         recFeedback.classList.remove("showFeedbackAnim");
@@ -1527,7 +1519,6 @@ function recSaveChars() {
                 fs.writeFileSync(charPath + "/" + characterList[i] + "/Poster.png", buffP);
             } catch (e) {
                 // if a character doesnt have recolors set up, skip this character
-                console.log(characterList[i] + " skipped");
             }
         }
     }
@@ -1563,7 +1554,7 @@ function changeCurrentCode() {
         newCurrent += "XXXXXX-XXXXXX-XXXXXX-XXXXXX"
     }
 
-    guiSettings.currentColorCode = newCurrent;
+    guiSettings.currentColorCode = newCurrent.toUpperCase();
     
     guiSettings = JSON.stringify(guiSettings, null, 2);
     fs.writeFileSync(mainPath + "/GUI Settings.json", guiSettings);
@@ -1669,4 +1660,9 @@ function rgb2hsv (r, g, b) {
 
     return [h, s, v];
 
+}
+
+//just a simple random function
+function genRnd(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) ) + min;
 }

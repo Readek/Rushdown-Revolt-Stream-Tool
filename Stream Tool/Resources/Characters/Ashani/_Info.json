@@ -1,13 +1,13 @@
 {
     "scoreboard": {
-        "x": 555,
-        "y": -58,
-        "scale": 3
+        "x": 570,
+        "y": 190,
+        "scale": 7
     },
     "gui": {
-        "x": 6,
-        "y": -18,
-        "scale": 5
+        "x": 20,
+        "y": 126,
+        "scale": 12.5
     },
     "recolor": {
         "full": {

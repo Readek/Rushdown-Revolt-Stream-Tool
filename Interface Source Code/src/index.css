@@ -246,7 +246,7 @@ input[type="text"] {
   outline: none;
 }
 .charSelectorImg:hover {
-  filter: brightness(1.5);
+  filter: brightness(1.3);
 }
 
 
@@ -402,10 +402,14 @@ input[type="text"] {
 
 .charImg {
   height: 100%;
+  width: 150px;
   object-fit: contain;
   z-index: -1;
+  padding: 3px;
   box-sizing: border-box;
   float: right;
+  transform: scale(1.6);
+  padding-top: 20px;
 }
 
 
@@ -704,6 +708,7 @@ input[type="text"] {
 .rosterEntry {
   width: 85px;
   height: 120px;
+  transform: scale(1.1);
   transition: transform 100ms;
   box-sizing: border-box;
 }

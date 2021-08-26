@@ -807,7 +807,7 @@ async function updateChar(pCharacter, charID) {
 			charEL.setAttribute('src', 'Resources/Characters/Random/Icon.png');
 		}
 	} else {
-		charEL.setAttribute('src', 'Resources/Characters/' + pCharacter + '/Portrait.png');
+		charEL.setAttribute('src', 'Resources/Characters/' + pCharacter + '/Full.png');
 	}
 
 

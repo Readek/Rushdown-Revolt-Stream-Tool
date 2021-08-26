@@ -387,7 +387,7 @@ function changeCharacter() {
     activeChar.style.setProperty("--char", character); //will be read when updating the scoreboard
 
     //change of the char selector image
-    selectorImg.setAttribute('src', charPath + '/' + character + '/Portrait.png');
+    selectorImg.setAttribute('src', charPath + '/' + character + '/Full.png');
     positionChar(character, selectorImg);
 
     //change of the character image in the background
@@ -400,7 +400,7 @@ function changeCharacter() {
 //change the image path depending on the character, only when in singles mode
 function charImgChange(charImg, charName) {
     if (gamemode == 1) {
-        charImg.setAttribute('src', charPath + '/' + charName + '/Portrait.png');
+        charImg.setAttribute('src', charPath + '/' + charName + '/Full.png');
     }
 }
 
@@ -609,9 +609,9 @@ function checkPlayerPreset() {
                     //actual image
                     const charImg = document.createElement('img');
                     charImg.className = "pfCharImg";
-                    charImg.setAttribute('src', charPath + '/' + char.character + '/Portrait.png');
+                    charImg.setAttribute('src', charPath + '/' + char.character + '/CharSel.png');
                     //we have to position it
-                    positionChar(char.character, charImg);
+                    positionCharPF(charImg);
                     //and add it to the mask
                     charImgBox.appendChild(charImg);
 
@@ -663,6 +663,22 @@ function positionChar(character, charEL) {
     
     //if the image fails to load, use a placeholder
 	charEL.addEventListener("error", () => {
+        charEL.setAttribute('src', charPath + '/Random/Icon.png');
+        charEL.style.left = "28px";
+        charEL.style.top = "0px";
+        charEL.style.transform = "scale(1.4)";
+	});
+}
+// to position them on the player presets UI
+function positionCharPF(charEL) {
+
+    //to position the character
+    charEL.style.left = "25px";
+    charEL.style.top = "-10px";
+    charEL.style.transform = "scale(5)";
+    
+    //if the image fails to load, use a placeholder
+	charEL.addEventListener("error", () => {
         charEL.setAttribute('src', charPath + '/Random/Icon Flip.png');
         charEL.style.left = "28px";
         charEL.style.top = "0px";
@@ -693,7 +709,7 @@ function playerPreset() {
     pCharEL.parentElement.parentElement.style.setProperty("--char", character);
 
     //change of the char selector image
-    pCharEL.setAttribute('src', charPath + '/' + character + '/Portrait.png');
+    pCharEL.setAttribute('src', charPath + '/' + character + '/Full.png');
     positionChar(character, pCharEL);
 
     //change of the character image in the background
@@ -933,7 +949,7 @@ function swap() {
         //the value read when updating the scoreboard
         ele1.style.setProperty("--char", ele2.style.getPropertyValue("--char"));
         //change of the char selector image
-        ele1.firstElementChild.firstElementChild.setAttribute('src', charPath + '/' + ele2.style.getPropertyValue("--char") + '/Portrait.png');
+        ele1.firstElementChild.firstElementChild.setAttribute('src', charPath + '/' + ele2.style.getPropertyValue("--char") + '/Full.png');
         positionChar(ele2.style.getPropertyValue("--char"), ele1.firstElementChild.firstElementChild);
         //change of the character image in the background
         if (i == 1) {
@@ -942,7 +958,7 @@ function swap() {
 
         //repeat for the second one
         ele2.style.setProperty("--char", store);
-        ele2.firstElementChild.firstElementChild.setAttribute('src', charPath + '/' + store + '/Portrait.png');
+        ele2.firstElementChild.firstElementChild.setAttribute('src', charPath + '/' + store + '/Full.png');
         positionChar(store, ele2.firstElementChild.firstElementChild);
         if (i == 1) {
             charImgChange(document.getElementById('p2CharImg'), store);
@@ -1421,7 +1437,7 @@ document.getElementById("saveRecolor").addEventListener("click", () => {
         const recFeedback = document.getElementById("recFeedback");
 
         if (skippedChars[0]) {
-            let infoText = "Skipped characters:\n";
+            let infoText = "Saved, but skipped:\n";
             for (let i = 0; i < skippedChars.length; i++) {
                 if (i != skippedChars.length - 1) {
                     infoText += skippedChars[i] + ", "

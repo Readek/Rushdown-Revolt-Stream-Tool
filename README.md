@@ -1,8 +1,8 @@
 
-![preview](https://cdn.discordapp.com/attachments/574303886869790730/769163753186263070/unknown.png)
+![preview](https://github.com/Readek/Rushdown-Revolt-Stream-Tool/blob/main/preview.png)
 
 # Rushdown-Revolt-Stream-Tool
-*Also available for [Rivals of Aether](https://github.com/Readek/RoA-Stream-Tool) and [Melee](https://github.com/Readek/Melee-Stream-Tool)!*
+*Also available for [Rivals of Aether](https://github.com/Readek/RoA-Stream-Tool) and [Super Smash Bros. Melee](https://github.com/Readek/Melee-Stream-Tool)!*
 
 So you want to do a Rushdown Revolt tournament stream, huh? Don't you worry, here you have everything you need! This is a stream tool with included overlays to make the tournament stream setup process as fast and easy as possible.
 
@@ -15,6 +15,7 @@ So you want to do a Rushdown Revolt tournament stream, huh? Don't you worry, her
   - Customizable Player Presets to setup your match in no time!
 - A [game overlay](https://gfycat.com/jampackedmindlessamericanriverotter) is included, showing player names, characters, scores, round, [W]/[L] status.
 - A "[VS Screen](https://gfycat.com/plushobedientfulmar)" used to hide the game while waiting for the next match.
+- [Custom colors](https://gfycat.com/whichfilthyhawk) to allow for some personal creativity for your stream!
 - [Easy and fast setup](https://gfycat.com/impeccablerealisticaustraliancattledog) using a browser source. Drag and drop!
 - Easy to customize! Add new characters, customize the overlays or even dive into the code if you're brave enough!
 - This is **not** a [Stream Control](http://farpnut.net/StreamControl) clone. It doesn't have anything to do with it, everything is custom made.
@@ -29,7 +30,7 @@ These are instructions for regular OBS Studio, but I imagine you can do the same
   - If the source looks weird, manually set the source's properties to 1920 width and 1080 height, or set your OBS canvas resolution to 1080p, or make the source fit the screen.
 - In the source's properties, change *Use custom frame rate* -> `60` (if streaming at 60fps of course).
 - Also tick `Refresh browser when scene becomes active`.
-- Manage it all with the `RoA Stream Tool` executable.
+- Manage it all with the `RR Stream Tool` executable.
 
 Repeat from the 3rd step to add the `VS Screen.html`, though I recommend you to do so on another scene.
 
@@ -39,7 +40,7 @@ Repeat from the 3rd step to add the `VS Screen.html`, though I recommend you to 
 - Press `ESC` to clear player info.
 
 ### Other things to know
-- When **changing the gamemode** (for example form singles to 2v2), a source refresh is needed.
+- When **changing the gamemode** (for example form singles to 2v2), or updating custom colors, a browser source refresh is needed.
 - The Scoreboard's optional intro will only play when refreshing the browser (so when changing scenes).
 
 2 basic transitions are included in the `Resources/OBS Transitions` folder, if you don't have a transition yourself of course. To use them on OBS:
@@ -60,10 +61,9 @@ To add a new player preset, go to `Resources/Texts/Player Info/` and create a ne
 For the overlays, there are PSD files for both the game scoreboard and the VS screen to help you customize them.
 
 If you want to add a new character:
-- Edit `/Resources/Texts/Interface Info.json` and add a new line with the name of your character.
 - Add your character assets in `Resources/Characters/`. For the poster assets, it is recommended that you use the same resolutions as the rest.
-- To position the portrait images, you will have to create and edit a file in `Resources/Texts/Character Info/` with the name of your character. You can use any other character file as a template.
-- You can add a character background for the VS at the `Resources/Backgrounds/` folder, but if you don't, the background will show greyish by default.
+- To position the portrait images, you will have to create and edit an `_Info.json` file. You can use any other character json as a template.
+- You can add a character background, but if you don't, the background will show greyish by default.
 
 If you're brave enough to dive into the code, I tried my best to document everything inside the code so you have an easier time, so go grab those `html` and `js` files!
 

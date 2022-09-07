@@ -1,7 +1,7 @@
 
 ![preview](https://github.com/Readek/Rushdown-Revolt-Stream-Tool/blob/main/preview.png)
 
-# Rushdown-Revolt-Stream-Tool
+# Rushdown Revolt Stream Tool
 *Also available for [Rivals of Aether](https://github.com/Readek/RoA-Stream-Tool) and [Super Smash Bros. Melee](https://github.com/Readek/Melee-Stream-Tool)!*
 
 So you want to do a Rushdown Revolt tournament stream, huh? Don't you worry, here you have everything you need! This is a stream tool with included overlays to make the tournament stream setup process as fast and easy as possible.

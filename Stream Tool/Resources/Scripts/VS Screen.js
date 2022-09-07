@@ -10,10 +10,10 @@ const introDelay = .5; //all animations will get this delay when the html loads 
 //max text sizes (used when resizing back)
 const playerSize = '120px';
 const tagSize = '70px';
-const roundSize = '70px';
-const tournamentSize = '50px';
+const roundSize = '64px';
+const tournamentSize = '42px';
 const casterSize = '40px';
-const twitterSize = '35px';
+const twitterSize = '32px';
 
 //to avoid the code constantly running the same method over and over
 let p1CharacterPrev, p2CharacterPrev, p3CharacterPrev, p4CharacterPrev, p5CharacterPrev, p6CharacterPrev;
@@ -738,7 +738,7 @@ function updateSocialText(textID, textToType, maxSize, wrapper) {
 //text resize, keeps making the text smaller until it fits
 function resizeText(textEL) {
 	const childrens = textEL.children;
-	while (textEL.scrollWidth > textEL.offsetWidth || textEL.scrollHeight > textEL.offsetHeight) {
+	while (textEL.scrollWidth > textEL.offsetWidth) {
 		if (childrens.length > 0) { //for tag+player texts
 			Array.from(childrens).forEach(function (child) {
 				child.style.fontSize = getFontSize(child);
